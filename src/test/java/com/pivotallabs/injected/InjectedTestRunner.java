@@ -14,13 +14,13 @@ public class InjectedTestRunner extends RobolectricTestRunner {
     }
 
     @Override protected Application createApplication() {
-        SampleGuiceApplication application = (SampleGuiceApplication)super.createApplication();
+        SampleRoboApplication application = (SampleRoboApplication)super.createApplication();
         application.setModule(new RobolectricSampleTestModule());
         return application;
     }
 
     @Override public void prepareTest(Object test) {
-        SampleGuiceApplication application = (SampleGuiceApplication) Robolectric.application;
+        SampleRoboApplication application = (SampleRoboApplication) Robolectric.application;
 
         //This project's application does not extend GuiceInjectableApplication therefore we need to enter the ContextScope manually.
         Injector injector = application.getInjector();
