@@ -29,7 +29,7 @@ To build and run tests:
     mvn clean test
 
 To install the sample app on the emulator:
-    mvn android:deploy
+    mvn package android:deploy
 
 
 BUILDING WITH ANT
