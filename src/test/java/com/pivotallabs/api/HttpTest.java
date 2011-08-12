@@ -3,7 +3,7 @@ package com.pivotallabs.api;
 import com.google.inject.internal.Maps;
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
-import com.xtremelabs.robolectric.util.HttpRequestInfo;
+import com.xtremelabs.robolectric.tester.org.apache.http.HttpRequestInfo;
 import com.xtremelabs.robolectric.util.Strings;
 import org.apache.http.HttpRequest;
 import org.apache.http.auth.AuthScope;
