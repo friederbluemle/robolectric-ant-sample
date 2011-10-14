@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static com.xtremelabs.robolectric.Robolectric.clickOn;
+import static com.xtremelabs.robolectric.Robolectric.shadowOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -120,10 +121,10 @@ public class SignInDialogTest {
 
         apiGateway.simulateResponse(401, "Access Denied");
 
-        ShadowAlertDialog alertDialog = ShadowAlertDialog.getLatestAlertDialog();
+        AlertDialog alertDialog = ShadowAlertDialog.getLatestAlertDialog();
         assertThat(alertDialog.isShowing(), equalTo(true));
-        assertThat(alertDialog.getTitle(), equalTo("Error"));
-        assertThat(alertDialog.getMessage(), equalTo("Username/Password combination is not recognized."));
+        assertThat(((String) shadowOf(alertDialog).getTitle()), equalTo("Error"));
+        assertThat(((String) shadowOf(alertDialog).getMessage()), equalTo("Username/Password combination is not recognized."));
         assertNotNull(alertDialog.getButton(AlertDialog.BUTTON_POSITIVE));
     }
 
