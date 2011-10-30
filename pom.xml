@@ -19,12 +19,6 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-ext-jdk16</artifactId>
-            <version>1.46</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.roboguice</groupId>
             <artifactId>roboguice</artifactId>
             <version>1.1</version>
@@ -35,7 +29,6 @@
             <artifactId>guice</artifactId>
             <version>2.0-no_aop</version>
         </dependency>
-
         
         <dependency>
             <groupId>com.pivotallabs</groupId>
