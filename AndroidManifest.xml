@@ -22,5 +22,5 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-sdk android:minSdkVersion="3"/>
-    <uses-sdk android:targetSdkVersion="9"/>
+    <uses-sdk android:targetSdkVersion="10"/>
 </manifest>

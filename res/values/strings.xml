@@ -12,4 +12,5 @@
     <string name="recent_activity">Recent Activity</string>
     <string name="injected_activity">Roboguice Injected Activity</string>
     <string name="injected_activity_caption">Roboguice Activity tested with Robolectric</string>
+    <string name="unit_tests_ftw">Unit Tests FTW!!!</string>
 </resources>

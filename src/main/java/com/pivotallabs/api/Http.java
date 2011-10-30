@@ -81,7 +81,7 @@ public class Http {
     }
 
     public static class Response {
-        private static final int BUFFER_SIZE = 2 ^ 12;
+        private static final int BUFFER_SIZE = 4096;
         private int statusCode;
         private String responseBody;
 
