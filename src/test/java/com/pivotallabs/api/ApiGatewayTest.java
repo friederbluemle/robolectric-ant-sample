@@ -1,5 +1,6 @@
 package com.pivotallabs.api;
 
+import android.app.Activity;
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import com.xtremelabs.robolectric.tester.org.apache.http.HttpRequestInfo;
@@ -27,7 +28,7 @@ public class ApiGatewayTest {
 
     @Before
     public void setUp() throws Exception {
-        apiGateway = new ApiGateway();
+        apiGateway = new ApiGateway(new Activity());
         responseCallbacks = new TestApiResponseCallbacks();
     }
 
@@ -89,7 +90,7 @@ public class ApiGatewayTest {
 
         Robolectric.getUiThreadScheduler().runOneTask();
 
-        assertThat(responseCallbacks.successResponse.getResponseBody(), equalTo("response body\n"));
+        assertThat(responseCallbacks.successResponse.getResponseBody(), equalTo("response body"));
     }
 
     private class TestApiRequest extends ApiRequest {

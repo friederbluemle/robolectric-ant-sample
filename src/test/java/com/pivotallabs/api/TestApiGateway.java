@@ -1,5 +1,6 @@
 package com.pivotallabs.api;
 
+import android.app.Activity;
 import com.pivotallabs.util.Pair;
 
 import java.util.ArrayList;
@@ -8,6 +9,10 @@ import java.util.List;
 public class TestApiGateway extends ApiGateway {
 
     List<Pair<ApiRequest, ApiResponseCallbacks>> pendingRequests = new ArrayList<Pair<ApiRequest, ApiResponseCallbacks>>();
+
+    public TestApiGateway() {
+        super(new Activity());
+    }
 
     @Override
     public void makeRequest(ApiRequest apiRequest, ApiResponseCallbacks responseCallbacks) {

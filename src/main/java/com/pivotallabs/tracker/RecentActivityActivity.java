@@ -14,7 +14,7 @@ import com.pivotallabs.api.ApiGateway;
 
 public class RecentActivityActivity extends Activity {
 
-    ApiGateway apiGateway = new ApiGateway();
+    ApiGateway apiGateway = new ApiGateway(this, R.raw.tracker_cert_store);
     SignInDialog signInDialog;
 
     private AuthenticationGateway authenticationGateway;
