@@ -2,71 +2,88 @@
 <project name="RoblectricSample" default="help">
 
     <!-- The local.properties file is created and updated by the 'android' tool.
-         It contains the path to the SDK. It should *NOT* be checked in in Version
-         Control Systems. -->
-    <property file="local.properties"/>
+         It contains the path to the SDK. It should *NOT* be checked into
+         Version Control Systems. -->
+    <loadproperties srcFile="local.properties"/>
 
-    <!-- The build.properties file can be created by you and is never touched
-         by the 'android' tool. This is the place to change some of the default property values
-         used by the Ant rules.
+    <!-- The ant.properties file can be created by you. It is only edited by the
+         'android' tool to add properties to it.
+         This is the place to change some Ant specific build properties.
          Here are some properties you may want to change/update:
 
-         application.package
-             the name of your application package as defined in the manifest. Used by the
-             'uninstall' rule.
          source.dir
-             the name of the source directory. Default is 'src'.
+             The name of the source directory. Default is 'src'.
          out.dir
-             the name of the output directory. Default is 'bin'.
+             The name of the output directory. Default is 'bin'.
 
-         Properties related to the SDK location or the project target should be updated
-          using the 'android' tool with the 'update' action.
+         For other overridable properties, look at the beginning of the rules
+         files in the SDK, at tools/ant/build.xml
 
-         This file is an integral part of the build system for your application and
-         should be checked in in Version Control Systems.
+         Properties related to the SDK location or the project target should
+         be updated using the 'android' tool with the 'update' action.
+
+         This file is an integral part of the build system for your
+         application and should be checked into Version Control Systems.
 
          -->
-    <property file="build.properties"/>
+    <property file="ant.properties"/>
 
-    <property name="external.libs.dir" value="${robolectric.sample.external.libs.dir}" />
-    <property name="jar.libs.dir" value="${robolectric.sample.external.libs.dir}" />
+    <property name="external.libs.dir" value="${robolectric.sample.external.libs.dir}"/>
+    <property name="jar.libs.dir" value="${robolectric.sample.external.libs.dir}"/>
+
+    <!-- The project.properties file is created and updated by the 'android'
+         tool, as well as ADT.
+
+         This contains project specific properties such as project target, and library
+         dependencies. Lower level build properties are stored in ant.properties
+         (or in .classpath for Eclipse projects).
+
+         This file is an integral part of the build system for your
+         application and should be checked into Version Control Systems. -->
+    <loadproperties srcFile="project.properties"/>
+
+    <!-- quick check on sdk.dir -->
+    <fail
+        message="sdk.dir is missing. Make sure to generate local.properties using 'android update project'"
+        unless="sdk.dir"
+        />
 
 
-    <!-- The default.properties file is created and updated by the 'android' tool, as well
-         as ADT.
-         This file is an integral part of the build system for your application and
-         should be checked in in Version Control Systems. -->
-    <property file="default.properties"/>
+    <!-- extension targets. Uncomment the ones where you want to do custom work
+in between standard targets -->
+    <!--
+        <target name="-pre-build">
+        </target>
+        <target name="-pre-compile">
+        </target>
 
-    <!-- Custom Android task to deal with the project target, and import the proper rules.
-         This requires ant 1.6.0 or above. -->
-    <path id="android.antlibs">
-        <pathelement path="${sdk.dir}/tools/lib/anttasks.jar"/>
-        <pathelement path="${sdk.dir}/tools/lib/sdklib.jar"/>
-        <pathelement path="${sdk.dir}/tools/lib/androidprefs.jar"/>
-        <pathelement path="${sdk.dir}/tools/lib/apkbuilder.jar"/>
-        <pathelement path="${sdk.dir}/tools/lib/jarutils.jar"/>
-    </path>
-
-    <taskdef name="setup"
-             classname="com.android.ant.SetupTask"
-             classpathref="android.antlibs"/>
-
-    <!-- Execute the Android Setup task that will setup some properties specific to the target,
-         and import the build rules files.
-
-         The rules file is imported from
-            <SDK>/platforms/<target_platform>/templates/android_rules.xml
-
-         To customize some build steps for your project:
-         - copy the content of the main node <project> from android_rules.xml
-         - paste it in this build.xml below the <setup /> task.
-         - disable the import by changing the setup task below to <setup import="false" />
-
-         This will ensure that the properties are setup correctly but that your customized
-         build steps are used.
+        /* This is typically used for code obfuscation.
+           Compiled code location: ${out.classes.absolute.dir}
+           If this is not done in place, override ${out.dex.input.absolute.dir} */
+        <target name="-post-compile">
+        </target>
     -->
-    <setup/>
+
+    <!-- Import the actual build file.
+
+         To customize existing targets, there are two options:
+         - Customize only one target:
+             - copy/paste the target into this file, *before* the
+               <import> task.
+             - customize it to your needs.
+         - Customize the whole content of build.xml
+             - copy/paste the content of the rules files (minus the top node)
+               into this file, replacing the <import> task.
+             - customize to your needs.
+
+         ***********************
+         ****** IMPORTANT ******
+         ***********************
+         In all cases you must update the value of version-tag below to read 'custom' instead of an integer,
+         in order to avoid having your file be overridden by tools such as "android update project"
+    -->
+    <!-- version-tag: 1 -->
+    <import file="${sdk.dir}/tools/ant/build.xml"/>
 
     <property name="test.absolute.dir" location="${test.dir}"/>
     <property name="out.test-classes.dir" value="${out.absolute.dir}/testClasses"/>
@@ -80,7 +97,7 @@
     </condition>
     <exec executable="date" outputproperty="build.date"/>
 
-    <target name="compile.tests" depends="compile"
+    <target name="compile.tests" depends="-compile"
             description="compile module source; test classes" unless="skip.tests">
         <mkdir dir="${out.test-classes.absolute.dir}"/>
 
@@ -97,7 +114,11 @@
         </javac>
     </target>
 
-    <target name="clean" depends="android_rules.clean" description="cleanup module">
+    <target name="clean" description="cleanup module">
+        <!-- dunno how to depend on android's clean, so subant instead -->
+        <subant inheritall="true" buildpath="${sdk.dir}/tools/ant" antfile="build.xml" failonerror="true">
+            <target name="clean"/>
+        </subant>
         <delete dir="${out.test-classes.absolute.dir}"/>
         <delete dir="${tmp.dir}"/>
     </target>
@@ -124,14 +145,17 @@
         <fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
     </target>
 
-    <target name="maven-setup" depends="maven-set-android-sdk, maven-install-jars" description="Set the path to the Android SDK and install jars"/>
-    
+    <target name="maven-setup" depends="maven-set-android-sdk, maven-install-jars"
+            description="Set the path to the Android SDK and install jars"/>
+
     <target name="maven-install-jars" description="Install the jar files that Maven can't find for itself">
         <exec executable="mvn">
-            <arg line="install:install-file -DgroupId=com.google.inject -DartifactId=guice -Dversion=2.0 -Dclassifier=no-aop -Dpackaging=jar -Dfile=lib/main/guice-2.0-no_aop.jar" />
+            <arg
+                line="install:install-file -DgroupId=com.google.inject -DartifactId=guice -Dversion=2.0 -Dclassifier=no-aop -Dpackaging=jar -Dfile=lib/main/guice-2.0-no_aop.jar"/>
         </exec>
         <exec executable="mvn">
-            <arg line="install:install-file -DgroupId=com.google.android.maps -DartifactId=maps -Dversion=8_r2 -Dpackaging=jar -Dfile=${sdk.dir}/add-ons/addon_google_apis_google_inc_8/libs/maps.jar" />
+            <arg
+                line="install:install-file -DgroupId=com.google.android.maps -DartifactId=maps -Dversion=8_r2 -Dpackaging=jar -Dfile=${sdk.dir}/add-ons/addon_google_apis_google_inc_8/libs/maps.jar"/>
         </exec>
     </target>
 
@@ -139,12 +163,12 @@
         <copy file="pom.xml" tofile="pom.xml.tmp">
             <filterchain>
                 <tokenfilter>
-                    <replacestring from="&lt;!--&lt;path&gt;&lt;/path&gt;--&gt;" to="&lt;path&gt;${sdk.dir}&lt;/path&gt;"/>
+                    <replacestring from="&lt;!--&lt;path&gt;&lt;/path&gt;--&gt;"
+                                   to="&lt;path&gt;${sdk.dir}&lt;/path&gt;"/>
                 </tokenfilter>
             </filterchain>
         </copy>
         <copy file="pom.xml.tmp" tofile="pom.xml"/>
         <delete file="pom.xml.tmp"/>
     </target>
-   
 </project>
