@@ -16,6 +16,10 @@
     <description>Sample project demonstrating use of the Robolectric Android testing project.</description>
     <url>https://github.com/pivotal/RobolectricSample</url>
 
+    <properties>
+        <robolectric.version>1.0</robolectric.version>
+    </properties>
+
     <dependencies>
 
         <dependency>
@@ -33,7 +37,7 @@
         <dependency>
             <groupId>com.pivotallabs</groupId>
             <artifactId>robolectric</artifactId>
-            <version>1.0</version>
+            <version>${robolectric.version}</version>
             <scope>test</scope>
         </dependency>
 
