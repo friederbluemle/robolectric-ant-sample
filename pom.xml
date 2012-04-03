@@ -17,7 +17,7 @@
     <url>https://github.com/pivotal/RobolectricSample</url>
 
     <properties>
-        <robolectric.version>1.0</robolectric.version>
+        <robolectric.version>1.1</robolectric.version>
     </properties>
 
     <dependencies>
