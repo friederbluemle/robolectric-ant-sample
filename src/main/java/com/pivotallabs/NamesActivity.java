@@ -5,11 +5,16 @@ import android.os.Bundle;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NamesActivity extends Activity {
 
-    private static ArrayList<String> names = new ArrayList<String>();
-    static {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.names_list_layout);
+
+        List<String> names = new ArrayList<String>();
         names.add("Dick Cheney");             // http://icons.iconarchive.com/icons/iloveicons.ru/so-sweet/128/chocolate-cake-icon.png
         names.add("Donald Rumsfeld");         // http://icons.iconarchive.com/icons/iloveicons.ru/so-sweet/128/cookies-icon.png
         names.add("John Ashcroft");           // http://icons.iconarchive.com/icons/iloveicons.ru/so-sweet/128/cream-cake-icon.png
@@ -21,15 +26,7 @@ public class NamesActivity extends Activity {
         names.add("Kai Lan");                 // http://icons.iconarchive.com/icons/mcdo-design/japan-summer/256/Kingyobati-Empty-icon.png
         names.add("Sheriff Woody");           // http://icons.iconarchive.com/icons/mcdo-design/japan-summer/256/Matsriutiwa-icon.png
         names.add("Slinky Dog");              // http://icons.iconarchive.com/icons/mcdo-design/japan-summer/256/Kingyobati-Full-icon.png
-    }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.names_list_layout);
-
-        NamesAdapter adapter = new NamesAdapter(names);
-
-        ((ListView) findViewById(R.id.names_list)).setAdapter(adapter);
+        ((ListView) findViewById(R.id.names_list)).setAdapter(new NamesAdapter(names));
     }
 }

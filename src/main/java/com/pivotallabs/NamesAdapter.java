@@ -7,12 +7,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 class NamesAdapter extends BaseAdapter {
-    private ArrayList<String> names;
+    private List<String> names;
 
-    public NamesAdapter(ArrayList<String> names) {
+    public NamesAdapter(List<String> names) {
         this.names = names;
     }
 
