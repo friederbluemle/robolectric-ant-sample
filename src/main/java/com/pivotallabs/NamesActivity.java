@@ -10,17 +10,17 @@ public class NamesActivity extends Activity {
 
     private static ArrayList<String> names = new ArrayList<String>();
     static {
-        names.add("Lauren Conrad");
-        names.add("Heidi Montag");
-        names.add("Kim Kardashian");
-        names.add("Lindsey Lohan");
-        names.add("Justin Bieber");
-        names.add("Sponge Bob Square Pants");
-        names.add("Kai Lan");
-        names.add("Polly Pockets");
-        names.add("Sheriff Woody");
-        names.add("Lotso Bear");
-        names.add("Slinky Dog");
+        names.add("Dick Cheney");             // http://icons.iconarchive.com/icons/iloveicons.ru/so-sweet/128/chocolate-cake-icon.png
+        names.add("Donald Rumsfeld");         // http://icons.iconarchive.com/icons/iloveicons.ru/so-sweet/128/cookies-icon.png
+        names.add("John Ashcroft");           // http://icons.iconarchive.com/icons/iloveicons.ru/so-sweet/128/cream-cake-icon.png
+        names.add("Karl Rove");               // http://icons.iconarchive.com/icons/iloveicons.ru/so-sweet/128/chocolate-cake-icon.png
+        names.add("Tom Ridge");               // http://icons.iconarchive.com/icons/iloveicons.ru/so-sweet/128/chocolate-cake-icon.png
+        names.add("Justin Bieber");           // http://icons.iconarchive.com/icons/iloveicons.ru/so-sweet/128/tart-icon.png
+        names.add("Lindsey Lohan");           // http://icons.iconarchive.com/icons/iloveicons.ru/so-sweet/128/tartlet-icon.png
+        names.add("Sponge Bob Square Pants"); // http://icons.iconarchive.com/icons/mcdo-design/japan-summer/256/Cooribata-icon.png
+        names.add("Kai Lan");                 // http://icons.iconarchive.com/icons/mcdo-design/japan-summer/256/Kingyobati-Empty-icon.png
+        names.add("Sheriff Woody");           // http://icons.iconarchive.com/icons/mcdo-design/japan-summer/256/Matsriutiwa-icon.png
+        names.add("Slinky Dog");              // http://icons.iconarchive.com/icons/mcdo-design/japan-summer/256/Kingyobati-Full-icon.png
     }
 
     @Override

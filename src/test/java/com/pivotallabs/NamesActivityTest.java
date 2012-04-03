@@ -28,6 +28,6 @@ public class NamesActivityTest {
 
         TextView nameRow = (TextView) namesListView.getChildAt(1);
 
-        assertThat(nameRow.getText().toString(), equalTo("Heidi Montag"));
+        assertThat(nameRow.getText().toString(), equalTo("Donald Rumsfeld"));
     }
 }
