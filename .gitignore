@@ -3,6 +3,7 @@ gen/
 out/
 aidls/gen/
 code/gen/
+classes/
 IntegrationTests/gen/
 .idea/workspace.xml
 .idea/dictionaries/
