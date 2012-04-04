@@ -18,10 +18,8 @@ import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyStore;
@@ -109,39 +107,20 @@ public class Http {
     }
 
     public static class Response {
-        private static final int BUFFER_SIZE = 4096;
         private int statusCode;
-        private String responseBody;
+        private InputStream responseBody;
 
-        public Response(HttpResponse httpResponse) {
+        public Response(HttpResponse httpResponse) throws IOException {
             statusCode = httpResponse.getStatusLine().getStatusCode();
-            try {
-                responseBody = fromStream(httpResponse.getEntity().getContent());
-            } catch (IOException e) {
-                throw new RuntimeException("error reading response body", e);
-            }
+            responseBody = httpResponse.getEntity().getContent();
         }
 
         public int getStatusCode() {
             return statusCode;
         }
 
-        public String getResponseBody() {
+        public InputStream getResponseBody() {
             return responseBody;
-        }
-
-        public String fromStream(InputStream inputStream) throws IOException {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream), BUFFER_SIZE);
-            StringBuilder stringBuilder = new StringBuilder();
-            String line;
-            try {
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line);
-                }
-            } finally {
-                inputStream.close();
-            }
-            return stringBuilder.toString();
         }
     }
 }

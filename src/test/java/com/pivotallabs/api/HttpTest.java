@@ -4,7 +4,6 @@ import com.google.inject.internal.Maps;
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import com.xtremelabs.robolectric.tester.org.apache.http.HttpRequestInfo;
-import com.xtremelabs.robolectric.util.Strings;
 import org.apache.http.HttpRequest;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.client.CredentialsProvider;
@@ -20,6 +19,7 @@ import org.junit.runner.RunWith;
 import java.net.URI;
 import java.util.HashMap;
 
+import static com.xtremelabs.robolectric.util.Strings.fromStream;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -77,7 +77,7 @@ public class HttpTest {
 
         Http.Response response = http.get("www.example.com", Maps.<String, String>newHashMap(), null, null);
 
-        assertThat(response.getResponseBody(), equalTo("it's all cool"));
+        assertThat(fromStream(response.getResponseBody()), equalTo("it's all cool"));
         assertThat(response.getStatusCode(), equalTo(666));
     }
 
@@ -95,7 +95,7 @@ public class HttpTest {
 
         HttpPost sentHttpRequest = (HttpPost) Robolectric.getSentHttpRequest(0);
         StringEntity entity = (StringEntity) sentHttpRequest.getEntity();
-        String sentPostBody = Strings.fromStream(entity.getContent());
+        String sentPostBody = fromStream(entity.getContent());
         assertThat(sentPostBody, equalTo("a post body"));
         assertThat(entity.getContentType().getValue(), equalTo("text/plain; charset=UTF-8"));
     }

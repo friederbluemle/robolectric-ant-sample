@@ -2,6 +2,7 @@ package com.pivotallabs.api;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -21,7 +22,12 @@ public class ApiGateway {
 
     protected void dispatch(ApiResponse apiResponse, ApiResponseCallbacks responseCallbacks) {
         if (apiResponse.isSuccess()) {
-            responseCallbacks.onSuccess(apiResponse);
+            try {
+                responseCallbacks.onSuccess(apiResponse);
+            } catch (Exception e) {
+                Log.e(ApiGateway.class.getName(), "Error proccessing response", e);
+                responseCallbacks.onFailure(apiResponse);
+            }
         } else {
             responseCallbacks.onFailure(apiResponse);
         }

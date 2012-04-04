@@ -5,12 +5,13 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class ApiResponse {
     private int httpResponseCode;
-    private String responseBody;
+    private InputStream responseBody;
 
-    public ApiResponse(int httpCode, String responseBody) {
+    public ApiResponse(int httpCode, InputStream responseBody) {
         this.httpResponseCode = httpCode;
         this.responseBody = responseBody;
     }
@@ -19,7 +20,7 @@ public class ApiResponse {
         return httpResponseCode;
     }
 
-    public String getResponseBody() {
+    public InputStream getResponseBody() {
         return responseBody;
     }
 

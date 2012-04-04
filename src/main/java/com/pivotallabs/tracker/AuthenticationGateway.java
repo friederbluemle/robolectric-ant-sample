@@ -8,8 +8,11 @@ import com.pivotallabs.api.ApiResponse;
 import com.pivotallabs.api.ApiResponseCallbacks;
 import com.pivotallabs.util.Strings;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.pivotallabs.util.Strings.fromStream;
 
 public class AuthenticationGateway {
     static final String TRACKER_AUTH_PREF_KEY = "tracker-auth";
@@ -50,8 +53,8 @@ public class AuthenticationGateway {
         }
 
         @Override
-        public void onSuccess(ApiResponse response) {
-            Matcher matcher = Pattern.compile("<guid>(.*?)</guid>").matcher(response.getResponseBody());
+        public void onSuccess(ApiResponse response) throws IOException {
+            Matcher matcher = Pattern.compile("<guid>(.*?)</guid>").matcher(fromStream(response.getResponseBody()));
             matcher.find();
             sharedPreferences.edit().putString(GUID_KEY, matcher.group(1)).commit();
             callbacks.onSuccess();

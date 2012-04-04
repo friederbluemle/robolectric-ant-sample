@@ -6,6 +6,8 @@ import com.pivotallabs.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.pivotallabs.util.Strings.asStream;
+
 public class TestApiGateway extends ApiGateway {
 
     List<Pair<ApiRequest, ApiResponseCallbacks>> pendingRequests = new ArrayList<Pair<ApiRequest, ApiResponseCallbacks>>();
@@ -21,7 +23,7 @@ public class TestApiGateway extends ApiGateway {
 
     public void simulateResponse(int httpCode, String responseBody) {
         ensurePendingRequests();
-        dispatch(new ApiResponse(httpCode, responseBody), unshiftEarliestRequest().b);
+        dispatch(new ApiResponse(httpCode, asStream(responseBody)), unshiftEarliestRequest().b);
     }
 
     public ApiRequest getLatestRequest() {

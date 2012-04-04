@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 
 import java.util.Map;
 
+import static com.pivotallabs.util.Strings.asStream;
+import static com.pivotallabs.util.Strings.fromStream;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -34,7 +36,7 @@ public class ApiGatewayTest {
 
     @Test
     public void dispatch_shouldCallOntoTheSuccessWhenApiResponseIsSuccess() throws Exception {
-        ApiResponse apiResponse = new ApiResponse(200, "response body");
+        ApiResponse apiResponse = new ApiResponse(200, asStream("response body"));
         apiGateway.dispatch(apiResponse, responseCallbacks);
 
         assertThat(responseCallbacks.successResponse, sameInstance(apiResponse));
@@ -44,12 +46,26 @@ public class ApiGatewayTest {
 
     @Test
     public void dispatch_shouldCallOnFailureWhenApiResponseIsFailure() throws Exception {
-        ApiResponse apiResponse = new ApiResponse(500, "response body");
+        ApiResponse apiResponse = new ApiResponse(500, asStream("response body"));
         apiGateway.dispatch(apiResponse, responseCallbacks);
 
         assertThat(responseCallbacks.failureResponse, sameInstance(apiResponse));
         assertThat(responseCallbacks.successResponse, nullValue());
         assertThat(responseCallbacks.onCompleteWasCalled, equalTo(true));
+    }
+
+    @Test
+    public void dispatch_shouldCallOnFailureWhenOnSuccessFails() throws Exception {
+        ApiResponse apiResponse = new ApiResponse(200, asStream("response body"));
+
+        TestApiResponseCallbacks callbacks = new TestApiResponseCallbacks() {
+            @Override public void onSuccess(ApiResponse successResponse) {
+                throw new RuntimeException("boom!");
+            }
+        };
+        apiGateway.dispatch(apiResponse, callbacks);
+        assertThat(callbacks.failureResponse, sameInstance(apiResponse));
+        assertThat(callbacks.onCompleteWasCalled, equalTo(true));
     }
 
     @Test
@@ -90,7 +106,7 @@ public class ApiGatewayTest {
 
         Robolectric.getUiThreadScheduler().runOneTask();
 
-        assertThat(responseCallbacks.successResponse.getResponseBody(), equalTo("response body"));
+        assertThat(fromStream(responseCallbacks.successResponse.getResponseBody()), equalTo("response body"));
     }
 
     private class TestApiRequest extends ApiRequest {

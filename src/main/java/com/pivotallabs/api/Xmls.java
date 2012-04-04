@@ -7,15 +7,13 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class Xmls {
 
-    public static Document getDocument(String xmlString) throws SAXException, IOException, ParserConfigurationException {
-        InputStream inputStream = new ByteArrayInputStream(xmlString.getBytes());
-        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputStream);
+    public static Document getDocument(InputStream xmlStream) throws SAXException, IOException, ParserConfigurationException {
+        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlStream);
         document.normalize();
         return document;
     }
