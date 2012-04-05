@@ -31,8 +31,8 @@ public class ApiResponseTest {
     }
 
     @Test
-    public void getResponseDocument_shouldCreateAnXmlDocumentFromTheResponseBody() throws Exception {
-        Document responseDocument = new ApiResponse(200, asStream(TestResponses.AUTH_SUCCESS)).getResponseDocument();
+    public void parseResponse_shouldAssignAnXmlDocumentFromTheResponseBody() throws Exception {
+        Document responseDocument = new ApiResponse(200, asStream(TestResponses.AUTH_SUCCESS)).parseResponse().getResponseDocument();
         assertThat(getTextContentOfChild(responseDocument, "guid"), equalTo("c93f12c"));
     }
 }

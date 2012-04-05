@@ -2,7 +2,6 @@ package com.pivotallabs.tracker;
 
 import android.app.Activity;
 import com.pivotallabs.TestCallbacks;
-import com.pivotallabs.TestResponses;
 import com.pivotallabs.api.TestApiGateway;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import org.junit.Before;
@@ -10,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.pivotallabs.TestResponses.AUTH_SUCCESS;
 import static com.pivotallabs.tracker.AuthenticationGateway.TRACKER_AUTH_PREF_KEY;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -48,14 +48,14 @@ public class AuthenticationGatewayTest {
     public void authenticated_shouldReturnTrueWhenSignedIn() throws Exception {
         assertThat(authenticationGateway.isAuthenticated(), equalTo(false));
         authenticationGateway.signIn("spongebob", "squidward", callbacks);
-        apiGateway.simulateResponse(200, TestResponses.AUTH_SUCCESS);
+        apiGateway.simulateResponse(200, AUTH_SUCCESS);
         assertThat(authenticationGateway.isAuthenticated(), equalTo(true));
     }
 
     @Test
     public void signOutShouldRemoveTheSharedPreferences() throws Exception {
         authenticationGateway.signIn("spongebob", "squidward", callbacks);
-        apiGateway.simulateResponse(200, TestResponses.AUTH_SUCCESS);
+        apiGateway.simulateResponse(200, AUTH_SUCCESS);
         authenticationGateway.signOut();
         assertThat(getStoredGuid(), equalTo(""));
     }
@@ -63,7 +63,7 @@ public class AuthenticationGatewayTest {
     @Test
     public void shouldCallSuccessWhenAuthenticationSucceeds() throws Exception {
         authenticationGateway.signIn("spongebob", "squidward", callbacks);
-        apiGateway.simulateResponse(200, TestResponses.AUTH_SUCCESS);
+        apiGateway.simulateResponse(200, AUTH_SUCCESS);
         assertThat(callbacks.successWasCalled, equalTo(true));
         assertThat(callbacks.failureWasCalled, equalTo(false));
         assertThat(callbacks.completeWasCalled, equalTo(true));
@@ -90,14 +90,14 @@ public class AuthenticationGatewayTest {
     @Test
     public void shouldStoreApiTokenInPrefs() throws Exception {
         authenticationGateway.signIn("spongebob", "squidward", callbacks);
-        apiGateway.simulateResponse(200, TestResponses.AUTH_SUCCESS);
+        apiGateway.simulateResponse(200, AUTH_SUCCESS);
         assertThat(getStoredGuid(), equalTo("c93f12c"));
     }
 
     @Test
     public void getGuid_shouldReturnGuidFromResponse() throws Exception {
         authenticationGateway.signIn("spongebob", "squidward", callbacks);
-        apiGateway.simulateResponse(200, TestResponses.AUTH_SUCCESS);
+        apiGateway.simulateResponse(200, AUTH_SUCCESS);
         assertThat(authenticationGateway.getToken(), equalTo("c93f12c"));
     }
 

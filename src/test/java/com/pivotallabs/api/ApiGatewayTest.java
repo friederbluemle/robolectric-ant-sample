@@ -55,6 +55,14 @@ public class ApiGatewayTest {
     }
 
     @Test
+    public void dispatch_shouldCallOnFailureWhenXmlParseErrorOccurs() throws Exception {
+        Robolectric.addPendingHttpResponse(200, "Invalid x-shmail");
+        apiGateway.makeRequest(new TestApiRequest(), responseCallbacks);
+        assertThat(responseCallbacks.successResponse, nullValue());
+        assertThat(responseCallbacks.onCompleteWasCalled, equalTo(true));
+    }
+
+    @Test
     public void dispatch_shouldCallOnFailureWhenOnSuccessFails() throws Exception {
         ApiResponse apiResponse = new ApiResponse(200, asStream(GENERIC_XML));
 

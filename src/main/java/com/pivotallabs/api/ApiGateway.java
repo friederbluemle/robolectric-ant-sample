@@ -3,6 +3,9 @@ package com.pivotallabs.api;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class ApiGateway {
 
     private final Http http = new Http();
@@ -35,11 +38,17 @@ public class ApiGateway {
         @Override
         protected ApiResponse doInBackground(ApiRequest... apiRequests) {
             ApiRequest apiRequest = apiRequests[0];
+            InputStream responseBody = null;
             try {
                 Http.Response response = http.get(apiRequest.getUrlString(), apiRequest.getHeaders(), apiRequest.getUsername(), apiRequest.getPassword());
-                return new ApiResponse(response.getStatusCode(), response.getResponseBody());
+                responseBody = response.getResponseBody();
+                return new ApiResponse(response.getStatusCode(), responseBody).parseResponse();
             } catch (Exception e) {
-                throw new RuntimeException("error making request", e);
+                return new ApiResponse(-1, null);
+            } finally {
+                if (responseBody != null) {
+                    try { responseBody.close(); } catch (IOException ignored) { }
+                }
             }
         }
 

@@ -9,13 +9,19 @@ import java.io.InputStream;
 
 public class ApiResponse {
     private int httpResponseCode;
+    private InputStream responseBody;
     private Document document;
 
-    public ApiResponse(int httpCode, InputStream responseBody) throws IOException, SAXException, ParserConfigurationException {
+    public ApiResponse(int httpCode, InputStream responseBody) {
         this.httpResponseCode = httpCode;
+        this.responseBody = responseBody;
+    }
+
+    ApiResponse parseResponse() throws IOException, SAXException, ParserConfigurationException {
         if (isSuccess()) {
             document = Xmls.getDocument(responseBody);
         }
+        return this;
     }
 
     public int getResponseCode() {
