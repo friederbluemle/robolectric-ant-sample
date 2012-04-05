@@ -1,8 +1,10 @@
 package com.pivotallabs.api;
 
-import android.app.Activity;
 import com.pivotallabs.util.Pair;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,18 +14,15 @@ public class TestApiGateway extends ApiGateway {
 
     List<Pair<ApiRequest, ApiResponseCallbacks>> pendingRequests = new ArrayList<Pair<ApiRequest, ApiResponseCallbacks>>();
 
-    public TestApiGateway() {
-        super(new Activity());
-    }
-
     @Override
     public void makeRequest(ApiRequest apiRequest, ApiResponseCallbacks responseCallbacks) {
         pendingRequests.add(Pair.of(apiRequest, responseCallbacks));
     }
 
-    public void simulateResponse(int httpCode, String responseBody) {
+    public void simulateResponse(int httpCode, String responseBody) throws IOException, SAXException, ParserConfigurationException {
         ensurePendingRequests();
-        dispatch(new ApiResponse(httpCode, asStream(responseBody)), unshiftEarliestRequest().b);
+        ApiResponse apiResponse = new ApiResponse(httpCode, asStream(responseBody));
+        dispatch(apiResponse, unshiftEarliestRequest().b);
     }
 
     public ApiRequest getLatestRequest() {

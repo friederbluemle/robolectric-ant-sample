@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
 public class SignInDialogTest {
- private View signInButton;
+    private View signInButton;
     private TextView usernameEditText;
     private TextView passwordEditText;
     private TestApiGateway apiGateway;
@@ -33,7 +33,7 @@ public class SignInDialogTest {
     public void setUp() throws Exception {
         apiGateway = new TestApiGateway();
         signInDialog = new SignInDialog(new Activity(), new AuthenticationGateway(apiGateway, new Activity()));
-        
+
         signInDialog.show();
 
         usernameEditText = (TextView) signInDialog.findViewById(R.id.username);
@@ -58,7 +58,7 @@ public class SignInDialogTest {
 
     @Test(expected = RuntimeException.class)
     public void shouldNotBeAbleToSignInIfPasswordHasNotBeenSet() throws Exception {
-        usernameEditText.setText("Sponge Bob");        
+        usernameEditText.setText("Sponge Bob");
         clickOn(signInButton);
     }
 
@@ -79,7 +79,7 @@ public class SignInDialogTest {
     }
 
     @Test
-    public void shouldReEnableTheSignInButtonIfSignInFails() {
+    public void shouldReEnableTheSignInButtonIfSignInFails() throws Exception {
         usernameEditText.setText("Sponge Bob");
         passwordEditText.setText("squidward");
         clickOn(signInButton);

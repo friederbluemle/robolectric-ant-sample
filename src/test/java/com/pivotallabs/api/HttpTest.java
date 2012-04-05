@@ -30,7 +30,7 @@ public class HttpTest {
     @Before
     public void setup() {
         Robolectric.setDefaultHttpResponse(200, "OK");
-        http = new Http(Robolectric.application);
+        http = new Http();
     }
 
     @Test

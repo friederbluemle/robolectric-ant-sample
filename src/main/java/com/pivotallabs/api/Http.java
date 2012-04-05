@@ -1,6 +1,5 @@
 package com.pivotallabs.api;
 
-import android.content.Context;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -10,11 +9,10 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.scheme.SocketFactory;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.SingleClientConnManager;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 
@@ -22,20 +20,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.KeyStore;
 import java.util.Map;
 
 import static com.pivotallabs.util.Strings.isEmptyOrWhitespace;
 
 public class Http {
 
-    private Context context;
-    private int[] certStoreResIds;
-
-    public Http(Context context, int... certStoreResIds) {
-        this.context = context;
-        this.certStoreResIds = certStoreResIds;
-    }
+    private DefaultHttpClient httpClient;
 
     public Response get(String url, Map<String, String> headers, String username, String password)
             throws IOException, URISyntaxException {
@@ -52,23 +43,15 @@ public class Http {
     }
 
     private Response makeRequest(Map<String, String> headers, String username, String password, HttpRequestBase method, String host) {
-        DefaultHttpClient client = null;
         try {
             for (Map.Entry<String, String> entry : headers.entrySet()) {
                 method.setHeader(entry.getKey(), entry.getValue());
             }
-            client = getHttpClient();
+            DefaultHttpClient client = getHttpClient();
             addBasicAuthCredentials(client, host, username, password);
             return new Response(client.execute(method));
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (client != null) {
-                try {
-                    client.getConnectionManager().shutdown();
-                } catch (Exception ignored) {
-                }
-            }
         }
     }
 
@@ -80,30 +63,14 @@ public class Http {
     }
 
     private DefaultHttpClient getHttpClient() {
-        HttpParams parameters = new BasicHttpParams();
-        SchemeRegistry schemeRegistry = new SchemeRegistry();
-        schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-        schemeRegistry.register(new Scheme("https", createSSLSocketFactory(), 443));
-        return new DefaultHttpClient(new SingleClientConnManager(parameters, schemeRegistry), parameters);
-    }
-
-    private SocketFactory createSSLSocketFactory() {
-        try {
-            KeyStore trusted = KeyStore.getInstance(KeyStore.getDefaultType());
-            for (int certStoreResId : certStoreResIds) {
-                // Bob explains how to create the cert store:
-                // http://blog.crazybob.org/2010/02/android-trusting-ssl-certificates.html
-                InputStream in = context.getResources().openRawResource(certStoreResId);
-                try {
-                    trusted.load(in, "testingrocks".toCharArray());
-                } finally {
-                    in.close();
-                }
-            }
-            return new SSLSocketFactory(trusted);
-        } catch (Exception e) {
-            throw new AssertionError(e);
+        if (httpClient == null) {
+            HttpParams parameters = new BasicHttpParams();
+            SchemeRegistry schemeRegistry = new SchemeRegistry();
+            schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+            schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+            httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(parameters, schemeRegistry), parameters);
         }
+        return httpClient;
     }
 
     public static class Response {

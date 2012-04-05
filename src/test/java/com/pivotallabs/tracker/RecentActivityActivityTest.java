@@ -52,7 +52,7 @@ public class RecentActivityActivityTest {
     }
 
     @Test
-    public void shouldRetrieveRecentActivityUponSuccessfulSignIn() {
+    public void shouldRetrieveRecentActivityUponSuccessfulSignIn() throws Exception {
         signOutAndReCreateActivity();
         signInThroughDialog();
 
@@ -126,7 +126,7 @@ public class RecentActivityActivityTest {
         createActivity();
     }
 
-    private void signInThroughDialog() {
+    private void signInThroughDialog() throws Exception {
         assertThat(activity.signInDialog.isShowing(), equalTo(true));
         ((EditText) activity.signInDialog.findViewById(R.id.username)).setText("user");
         ((EditText) activity.signInDialog.findViewById(R.id.password)).setText("pass");

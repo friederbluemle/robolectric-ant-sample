@@ -5,7 +5,7 @@ import com.pivotallabs.api.TestApiGateway;
 import com.pivotallabs.tracker.AuthenticationGateway;
 
 public class TestHelper {
-    public static void signIn() {
+    public static void signIn() throws Exception {
         TestApiGateway apiGateway = new TestApiGateway();
         new AuthenticationGateway(apiGateway, new Activity())
                 .signIn("spongebob", "squarepants", new Callbacks());

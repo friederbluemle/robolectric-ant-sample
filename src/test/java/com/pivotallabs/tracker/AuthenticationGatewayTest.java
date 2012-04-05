@@ -38,14 +38,14 @@ public class AuthenticationGatewayTest {
     }
 
     @Test
-    public void shouldSendUsernameAndPassword() {
+    public void shouldSendUsernameAndPassword() throws Exception {
         authenticationGateway.signIn("spongebob", "squidward", callbacks);
         TrackerAuthenticationRequest request = (TrackerAuthenticationRequest) apiGateway.getLatestRequest();
         assertThat(request, equalTo(new TrackerAuthenticationRequest("spongebob", "squidward")));
     }
 
     @Test
-    public void authenticated_shouldReturnTrueWhenSignedIn() {
+    public void authenticated_shouldReturnTrueWhenSignedIn() throws Exception {
         assertThat(authenticationGateway.isAuthenticated(), equalTo(false));
         authenticationGateway.signIn("spongebob", "squidward", callbacks);
         apiGateway.simulateResponse(200, TestResponses.AUTH_SUCCESS);
@@ -53,7 +53,7 @@ public class AuthenticationGatewayTest {
     }
 
     @Test
-    public void signOutShouldRemoveTheSharedPreferences() {
+    public void signOutShouldRemoveTheSharedPreferences() throws Exception {
         authenticationGateway.signIn("spongebob", "squidward", callbacks);
         apiGateway.simulateResponse(200, TestResponses.AUTH_SUCCESS);
         authenticationGateway.signOut();
@@ -61,7 +61,7 @@ public class AuthenticationGatewayTest {
     }
 
     @Test
-    public void shouldCallSuccessWhenAuthenticationSucceeds() {
+    public void shouldCallSuccessWhenAuthenticationSucceeds() throws Exception {
         authenticationGateway.signIn("spongebob", "squidward", callbacks);
         apiGateway.simulateResponse(200, TestResponses.AUTH_SUCCESS);
         assertThat(callbacks.successWasCalled, equalTo(true));
@@ -70,7 +70,7 @@ public class AuthenticationGatewayTest {
     }
 
     @Test
-    public void shouldCallFailureWhenAuthenticationFails() {
+    public void shouldCallFailureWhenAuthenticationFails() throws Exception {
         authenticationGateway.signIn("spongebob", "squidward", callbacks);
         apiGateway.simulateResponse(401, "Access Denied");
         assertThat(callbacks.failureWasCalled, equalTo(true));
@@ -79,7 +79,7 @@ public class AuthenticationGatewayTest {
     }
 
     @Test
-    public void shouldCallFailureWhenServerReturnsError() {
+    public void shouldCallFailureWhenServerReturnsError() throws Exception {
         authenticationGateway.signIn("spongebob", "squidward", callbacks);
         apiGateway.simulateResponse(500, "ERROR");
         assertThat(callbacks.failureWasCalled, equalTo(true));
@@ -88,7 +88,7 @@ public class AuthenticationGatewayTest {
     }
 
     @Test
-    public void shouldStoreApiTokenInPrefs() {
+    public void shouldStoreApiTokenInPrefs() throws Exception {
         authenticationGateway.signIn("spongebob", "squidward", callbacks);
         apiGateway.simulateResponse(200, TestResponses.AUTH_SUCCESS);
         assertThat(getStoredGuid(), equalTo("c93f12c"));

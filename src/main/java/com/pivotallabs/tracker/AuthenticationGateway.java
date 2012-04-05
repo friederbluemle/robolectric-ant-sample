@@ -6,13 +6,10 @@ import com.pivotallabs.Callbacks;
 import com.pivotallabs.api.ApiGateway;
 import com.pivotallabs.api.ApiResponse;
 import com.pivotallabs.api.ApiResponseCallbacks;
+import com.pivotallabs.api.Xmls;
 import com.pivotallabs.util.Strings;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.pivotallabs.util.Strings.fromStream;
 
 public class AuthenticationGateway {
     static final String TRACKER_AUTH_PREF_KEY = "tracker-auth";
@@ -26,9 +23,9 @@ public class AuthenticationGateway {
     }
 
     public void signIn(String username, String password, Callbacks responseCallbacks) {
-        TrackerAuthenticationRequest apiRequest = new TrackerAuthenticationRequest(username, password);
-        ApiResponseCallbacks remoteCallbacks = new AuthenticationApiResponseCallbacks(responseCallbacks, sharedPreferences);
-        apiGateway.makeRequest(apiRequest, remoteCallbacks);
+        apiGateway.makeRequest(
+                new TrackerAuthenticationRequest(username, password),
+                new AuthenticationApiResponseCallbacks(responseCallbacks, sharedPreferences));
     }
 
     public boolean isAuthenticated() {
@@ -54,9 +51,8 @@ public class AuthenticationGateway {
 
         @Override
         public void onSuccess(ApiResponse response) throws IOException {
-            Matcher matcher = Pattern.compile("<guid>(.*?)</guid>").matcher(fromStream(response.getResponseBody()));
-            matcher.find();
-            sharedPreferences.edit().putString(GUID_KEY, matcher.group(1)).commit();
+            String guid = Xmls.getTextContentOfChild(response.getResponseDocument(), "guid");
+            sharedPreferences.edit().putString(GUID_KEY, guid).commit();
             callbacks.onSuccess();
         }
 

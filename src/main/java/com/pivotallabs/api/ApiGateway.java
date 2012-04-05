@@ -1,20 +1,11 @@
 package com.pivotallabs.api;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 public class ApiGateway {
-    private Context context;
-    private int[] certStoreResIds;
 
-    public ApiGateway(Context context, int... certStoreResIds) {
-        this.context = context;
-        this.certStoreResIds = certStoreResIds;
-    }
+    private final Http http = new Http();
 
     public void makeRequest(ApiRequest apiRequest, final ApiResponseCallbacks responseCallbacks) {
         new RemoteCallTask(responseCallbacks).execute(apiRequest);
@@ -45,11 +36,9 @@ public class ApiGateway {
         protected ApiResponse doInBackground(ApiRequest... apiRequests) {
             ApiRequest apiRequest = apiRequests[0];
             try {
-                Http.Response response = new Http(context, certStoreResIds).get(apiRequest.getUrlString(), apiRequest.getHeaders(), apiRequest.getUsername(), apiRequest.getPassword());
+                Http.Response response = http.get(apiRequest.getUrlString(), apiRequest.getHeaders(), apiRequest.getUsername(), apiRequest.getPassword());
                 return new ApiResponse(response.getStatusCode(), response.getResponseBody());
-            } catch (IOException e) {
-                throw new RuntimeException("error making request", e);
-            } catch (URISyntaxException e) {
+            } catch (Exception e) {
                 throw new RuntimeException("error making request", e);
             }
         }

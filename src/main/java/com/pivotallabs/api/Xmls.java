@@ -13,7 +13,7 @@ import java.io.InputStream;
 public class Xmls {
 
     public static Document getDocument(InputStream xmlStream) throws SAXException, IOException, ParserConfigurationException {
-        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlStream);
+        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlStream, "UTF-8");
         document.normalize();
         return document;
     }

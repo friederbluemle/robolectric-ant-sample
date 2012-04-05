@@ -9,23 +9,21 @@ import java.io.InputStream;
 
 public class ApiResponse {
     private int httpResponseCode;
-    private InputStream responseBody;
+    private Document document;
 
-    public ApiResponse(int httpCode, InputStream responseBody) {
+    public ApiResponse(int httpCode, InputStream responseBody) throws IOException, SAXException, ParserConfigurationException {
         this.httpResponseCode = httpCode;
-        this.responseBody = responseBody;
+        if (isSuccess()) {
+            document = Xmls.getDocument(responseBody);
+        }
     }
 
     public int getResponseCode() {
         return httpResponseCode;
     }
 
-    public InputStream getResponseBody() {
-        return responseBody;
-    }
-
-    public Document getResponseDocument() throws IOException, SAXException, ParserConfigurationException {
-        return Xmls.getDocument(getResponseBody());
+    public Document getResponseDocument() {
+        return document;
     }
 
     public boolean isSuccess() {
@@ -34,13 +32,5 @@ public class ApiResponse {
 
     public boolean isUnauthorized() {
         return httpResponseCode == 401;
-    }
-
-    @Override
-    public String toString() {
-        return "ApiResponse{" +
-                "httpResponseCode=" + httpResponseCode +
-                ", responseBody='" + responseBody + '\'' +
-                '}';
     }
 }

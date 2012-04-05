@@ -1,6 +1,5 @@
 package com.pivotallabs.api;
 
-import android.app.Activity;
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import com.xtremelabs.robolectric.tester.org.apache.http.HttpRequestInfo;
@@ -16,8 +15,9 @@ import org.junit.runner.RunWith;
 
 import java.util.Map;
 
+import static com.pivotallabs.TestResponses.GENERIC_XML;
 import static com.pivotallabs.util.Strings.asStream;
-import static com.pivotallabs.util.Strings.fromStream;
+import static com.pivotallabs.util.TestUtil.asString;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -30,13 +30,13 @@ public class ApiGatewayTest {
 
     @Before
     public void setUp() throws Exception {
-        apiGateway = new ApiGateway(new Activity());
+        apiGateway = new ApiGateway();
         responseCallbacks = new TestApiResponseCallbacks();
     }
 
     @Test
     public void dispatch_shouldCallOntoTheSuccessWhenApiResponseIsSuccess() throws Exception {
-        ApiResponse apiResponse = new ApiResponse(200, asStream("response body"));
+        ApiResponse apiResponse = new ApiResponse(200, asStream(GENERIC_XML));
         apiGateway.dispatch(apiResponse, responseCallbacks);
 
         assertThat(responseCallbacks.successResponse, sameInstance(apiResponse));
@@ -46,7 +46,7 @@ public class ApiGatewayTest {
 
     @Test
     public void dispatch_shouldCallOnFailureWhenApiResponseIsFailure() throws Exception {
-        ApiResponse apiResponse = new ApiResponse(500, asStream("response body"));
+        ApiResponse apiResponse = new ApiResponse(500, asStream(GENERIC_XML));
         apiGateway.dispatch(apiResponse, responseCallbacks);
 
         assertThat(responseCallbacks.failureResponse, sameInstance(apiResponse));
@@ -56,7 +56,7 @@ public class ApiGatewayTest {
 
     @Test
     public void dispatch_shouldCallOnFailureWhenOnSuccessFails() throws Exception {
-        ApiResponse apiResponse = new ApiResponse(200, asStream("response body"));
+        ApiResponse apiResponse = new ApiResponse(200, asStream(GENERIC_XML));
 
         TestApiResponseCallbacks callbacks = new TestApiResponseCallbacks() {
             @Override public void onSuccess(ApiResponse successResponse) {
@@ -75,7 +75,7 @@ public class ApiGatewayTest {
         ApiRequest apiRequest = new TestApiRequest();
         apiGateway.makeRequest(apiRequest, responseCallbacks);
 
-        Robolectric.addPendingHttpResponse(200, "response body");
+        Robolectric.addPendingHttpResponse(200, GENERIC_XML);
 
         Robolectric.getBackgroundScheduler().runOneTask();
 
@@ -97,7 +97,7 @@ public class ApiGatewayTest {
         Robolectric.getBackgroundScheduler().pause();
         Robolectric.getUiThreadScheduler().pause();
 
-        Robolectric.addPendingHttpResponse(200, "response body");
+        Robolectric.addPendingHttpResponse(200, GENERIC_XML);
 
         apiGateway.makeRequest(new TestApiRequest(), responseCallbacks);
         Robolectric.getBackgroundScheduler().runOneTask();
@@ -106,7 +106,7 @@ public class ApiGatewayTest {
 
         Robolectric.getUiThreadScheduler().runOneTask();
 
-        assertThat(fromStream(responseCallbacks.successResponse.getResponseBody()), equalTo("response body"));
+        assertThat(asString(responseCallbacks.successResponse.getResponseDocument()), equalTo(GENERIC_XML));
     }
 
     private class TestApiRequest extends ApiRequest {

@@ -14,7 +14,7 @@ import com.pivotallabs.api.ApiGateway;
 
 public class RecentActivityActivity extends Activity {
 
-    ApiGateway apiGateway = new ApiGateway(this, R.raw.tracker_cert_store);
+    ApiGateway apiGateway = new ApiGateway();
     SignInDialog signInDialog;
 
     private AuthenticationGateway authenticationGateway;
@@ -61,10 +61,7 @@ public class RecentActivityActivity extends Activity {
     }
 
     private void update() {
-        recentActivities.update(
-                showLoadingWhileOutstanding,
-                notifyDataSetChangedCallbacks
-        );
+        recentActivities.update(showLoadingWhileOutstanding, notifyDataSetChangedCallbacks);
     }
 
     private void addSignOutMenuItem(Menu menu) {
