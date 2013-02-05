@@ -28,9 +28,6 @@
          -->
     <property file="ant.properties"/>
 
-    <property name="external.libs.dir" value="${robolectric.sample.external.libs.dir}"/>
-    <property name="jar.libs.dir" value="${robolectric.sample.external.libs.dir}"/>
-
     <!-- The project.properties file is created and updated by the 'android'
          tool, as well as ADT.
 
@@ -97,28 +94,46 @@ in between standard targets -->
     </condition>
     <exec executable="date" outputproperty="build.date"/>
 
-    <target name="compile.tests" depends="-compile"
-            description="compile module source; test classes" unless="skip.tests">
-        <mkdir dir="${out.test-classes.absolute.dir}"/>
+    <target name="-pre-compile">
+        <!-- android uses this property for its generated testing framework. We'll set it manually.-->
+        <property name="tested.project.absolute.dir" location="." />
+        <property name="tested.project.test.absolute.dir" location="${tested.project.absolute.dir}/src/test/java" />
+        <property name="out.test.classes.absolute.dir" location="${out.dir}/testClasses" />
+    </target>
 
-        <javac encoding="ascii" source="1.6" target="1.6" debug="true" extdirs=""
-               destdir="${out.test-classes.absolute.dir}"
-               verbose="${verbose}" classpath="${robolectric.sample.external.libs.dir}">
-            <src path="${test.absolute.dir}"/>
+    <target name="compile.tests" depends="-set-debug-files, -set-debug-mode, -compile">
+        <mkdir dir="${out.test.classes.absolute.dir}"/>
+
+        <path id="project.javac.classpath">
+            <path refid="project.all.jars.path"/>
+            <path refid="tested.project.classpath"/>
+            <pathelement path="${sdk.dir}/extras/android/support/v4/android-support-v4.jar"/>
+        </path>
+
+        <javac encoding="${java.encoding}"
+               source="${java.source}"
+               target="${java.target}"
+               debug="true"
+               extdirs=""
+               destdir="${out.test.classes.absolute.dir}"
+               bootclasspathref="project.target.class.path"
+               verbose="${verbose}"
+               classpathref="project.javac.classpath"
+               includeantruntime="false">
+            <src path="${source.absolute.dir}" />
+            <src path="${gen.absolute.dir}" />
+
+            <!-- test src -->
+            <src path="${tested.project.test.absolute.dir}"/>
             <classpath>
                 <pathelement path="${out.classes.absolute.dir}"/>
-                <path refid="android.target.classpath"/>
-                <fileset dir="${test.external.libs.absolute.dir}" includes="*.jar"/>
-                <fileset dir="${robolectric.sample.external.libs.dir}" includes="*.jar"/>
+                <fileset dir="${jar.libs.dir}" includes="*.jar"/>
+                <fileset dir="${tested.project.absolute.dir}/lib/test" includes="**/*.jar"/>
             </classpath>
         </javac>
     </target>
 
-    <target name="clean" description="cleanup module">
-        <!-- dunno how to depend on android's clean, so subant instead -->
-        <subant inheritall="true" buildpath="${sdk.dir}/tools/ant" antfile="build.xml" failonerror="true">
-            <target name="clean"/>
-        </subant>
+    <target name="-pre-clean" description="cleanup module">
         <delete dir="${out.test-classes.absolute.dir}"/>
         <delete dir="${tmp.dir}"/>
     </target>
@@ -137,9 +152,9 @@ in between standard targets -->
                 <pathelement path="${out.classes.absolute.dir}"/>
                 <pathelement path="${out.test-classes.absolute.dir}"/>
                 <fileset dir="${test.external.libs.absolute.dir}" includes="*.jar"/>
-                <fileset dir="${robolectric.sample.external.libs.dir}" includes="*.jar"/>
-
-                <path refid="android.target.classpath"/>
+                <fileset dir="${jar.libs.dir}" includes="*.jar"/>
+                <path refid="project.target.class.path"/>
+                <pathelement path="${sdk.dir}/extras/android/support/v4/android-support-v4.jar"/>
             </classpath>
         </junit>
         <fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
