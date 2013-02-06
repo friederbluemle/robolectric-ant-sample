@@ -2,6 +2,8 @@ package com.pivotallabs.api;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +42,15 @@ public class ApiGateway {
             ApiRequest apiRequest = apiRequests[0];
             InputStream responseBody = null;
             try {
-                Http.Response response = http.get(apiRequest.getUrlString(), apiRequest.getHeaders(), apiRequest.getUsername(), apiRequest.getPassword());
+                Http.Response response;
+                if (HttpPost.METHOD_NAME.equals(apiRequest.getMethod())) {
+                    response = http.post(apiRequest.getUrlString(), apiRequest.getHeaders(), apiRequest.getPostBody(), apiRequest.getUsername(), apiRequest.getPassword());
+                } else if(HttpGet.METHOD_NAME.equals(apiRequest.getMethod())) {
+                    response = http.get(apiRequest.getUrlString(), apiRequest.getHeaders(), apiRequest.getUsername(), apiRequest.getPassword());
+                } else {
+                    throw new RuntimeException("Unsupported Http Method!");
+                }
+
                 responseBody = response.getResponseBody();
                 return new ApiResponse(response.getStatusCode(), responseBody).parseResponse();
             } catch (Exception e) {

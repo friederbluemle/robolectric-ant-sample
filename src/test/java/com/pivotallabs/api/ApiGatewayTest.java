@@ -1,5 +1,6 @@
 package com.pivotallabs.api;
 
+import com.pivotallabs.util.Strings;
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import com.xtremelabs.robolectric.tester.org.apache.http.HttpRequestInfo;
@@ -7,12 +8,14 @@ import org.apache.http.HttpRequest;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.InputStream;
 import java.util.Map;
 
 import static com.pivotallabs.TestResponses.GENERIC_XML;
@@ -57,7 +60,7 @@ public class ApiGatewayTest {
     @Test
     public void dispatch_shouldCallOnFailureWhenXmlParseErrorOccurs() throws Exception {
         Robolectric.addPendingHttpResponse(200, "Invalid x-shmail");
-        apiGateway.makeRequest(new TestApiRequest(), responseCallbacks);
+        apiGateway.makeRequest(new TestGetRequest(), responseCallbacks);
         assertThat(responseCallbacks.successResponse, nullValue());
         assertThat(responseCallbacks.onCompleteWasCalled, equalTo(true));
     }
@@ -77,10 +80,10 @@ public class ApiGatewayTest {
     }
 
     @Test
-    public void shouldMakeRemoteCalls() {
+    public void shouldMakeRemoteGetCalls() {
         Robolectric.getBackgroundScheduler().pause();
 
-        ApiRequest apiRequest = new TestApiRequest();
+        ApiRequest apiRequest = new TestGetRequest();
         apiGateway.makeRequest(apiRequest, responseCallbacks);
 
         Robolectric.addPendingHttpResponse(200, GENERIC_XML);
@@ -101,13 +104,41 @@ public class ApiGatewayTest {
     }
 
     @Test
+    public void shouldMakeRemotePostCalls() throws Exception {
+        Robolectric.getBackgroundScheduler().pause();
+
+        ApiRequest apiRequest = new TestPostRequest();
+        apiGateway.makeRequest(apiRequest, responseCallbacks);
+
+        Robolectric.addPendingHttpResponse(200, GENERIC_XML);
+
+        Robolectric.getBackgroundScheduler().runOneTask();
+
+        HttpRequestInfo sentHttpRequestData = Robolectric.getSentHttpRequestInfo(0);
+        HttpRequest sentHttpRequest = sentHttpRequestData.getHttpRequest();
+        assertThat(sentHttpRequest.getRequestLine().getUri(), equalTo("www.example.com"));
+        assertThat(sentHttpRequest.getRequestLine().getMethod(), equalTo(HttpPost.METHOD_NAME));
+
+        assertThat(sentHttpRequest.getHeaders("foo")[0].getValue(), equalTo("bar"));
+
+        InputStream contentStream = ((HttpPost) sentHttpRequest).getEntity().getContent();
+
+        assertThat(Strings.fromStream(contentStream), CoreMatchers.equalTo("post body content"));
+
+        CredentialsProvider credentialsProvider =
+                (CredentialsProvider) sentHttpRequestData.getHttpContext().getAttribute(ClientContext.CREDS_PROVIDER);
+        assertThat(credentialsProvider.getCredentials(AuthScope.ANY).getUserPrincipal().getName(), CoreMatchers.equalTo("spongebob"));
+        assertThat(credentialsProvider.getCredentials(AuthScope.ANY).getPassword(), CoreMatchers.equalTo("squarepants"));
+    }
+
+    @Test
     public void shouldDispatchUponReceivingResponse() throws Exception {
         Robolectric.getBackgroundScheduler().pause();
         Robolectric.getUiThreadScheduler().pause();
 
         Robolectric.addPendingHttpResponse(200, GENERIC_XML);
 
-        apiGateway.makeRequest(new TestApiRequest(), responseCallbacks);
+        apiGateway.makeRequest(new TestGetRequest(), responseCallbacks);
         Robolectric.getBackgroundScheduler().runOneTask();
 
         assertThat(responseCallbacks.successResponse, nullValue());
@@ -117,7 +148,7 @@ public class ApiGatewayTest {
         assertThat(asString(responseCallbacks.successResponse.getResponseDocument()), equalTo(GENERIC_XML));
     }
 
-    private class TestApiRequest extends ApiRequest {
+    private class TestGetRequest extends ApiRequest {
         @Override public String getUrlString() {
             return "www.example.com";
         }
@@ -134,8 +165,46 @@ public class ApiGatewayTest {
             return headers;
         }
 
+        @Override public String getMethod() {
+            return HttpGet.METHOD_NAME;
+        }
+
         @Override public String getPostBody() {
             return super.getPostBody();
+        }
+
+        @Override public String getUsername() {
+            return "spongebob";
+        }
+
+        @Override public String getPassword() {
+            return "squarepants";
+        }
+    }
+
+    private class TestPostRequest extends ApiRequest {
+        @Override public String getUrlString() {
+            return "www.example.com";
+        }
+
+        @Override public Map<String, String> getParameters() {
+            Map<String, String> parameters = super.getParameters();
+            parameters.put("baz", "bang");
+            return parameters;
+        }
+
+        @Override public Map<String, String> getHeaders() {
+            Map<String, String> headers = super.getHeaders();
+            headers.put("foo", "bar");
+            return headers;
+        }
+
+        @Override public String getMethod() {
+            return HttpPost.METHOD_NAME;
+        }
+
+        @Override public String getPostBody() {
+            return "post body content";
         }
 
         @Override public String getUsername() {
