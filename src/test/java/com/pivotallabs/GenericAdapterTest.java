@@ -3,7 +3,7 @@ package com.pivotallabs;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

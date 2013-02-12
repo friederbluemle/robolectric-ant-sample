@@ -2,8 +2,8 @@ package com.pivotallabs.injected;
 
 import android.app.Application;
 import com.google.inject.Injector;
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 import org.junit.runners.model.InitializationError;
 import roboguice.inject.ContextScope;
 
