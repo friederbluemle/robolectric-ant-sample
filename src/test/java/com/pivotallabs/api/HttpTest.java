@@ -1,9 +1,9 @@
 package com.pivotallabs.api;
 
 import com.google.inject.internal.Maps;
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
-import com.xtremelabs.robolectric.tester.org.apache.http.HttpRequestInfo;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.tester.org.apache.http.HttpRequestInfo;
 import org.apache.http.HttpRequest;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.client.CredentialsProvider;
@@ -19,7 +19,7 @@ import org.junit.runner.RunWith;
 import java.net.URI;
 import java.util.HashMap;
 
-import static com.xtremelabs.robolectric.util.Strings.fromStream;
+import static org.robolectric.util.Strings.fromStream;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 

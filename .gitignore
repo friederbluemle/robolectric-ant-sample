@@ -8,6 +8,7 @@ IntegrationTests/gen/
 .idea/workspace.xml
 .idea/dictionaries/
 .idea/libraries/
+.idea/
 *.ipr
 *.iws
 *.iml

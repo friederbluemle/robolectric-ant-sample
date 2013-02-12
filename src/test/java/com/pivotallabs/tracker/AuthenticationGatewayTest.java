@@ -3,7 +3,7 @@ package com.pivotallabs.tracker;
 import android.app.Activity;
 import com.pivotallabs.TestCallbacks;
 import com.pivotallabs.api.TestApiGateway;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
