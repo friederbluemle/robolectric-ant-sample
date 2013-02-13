@@ -7,20 +7,25 @@ import com.pivotallabs.R;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import roboguice.RoboGuice;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
 
 @RunWith(InjectedTestRunner.class)
 public class InjectedActivityTest {
-    @Inject Context context;
+    @Inject
+    Context context;
 
-    @Inject InjectedActivity injectedActivity;
-    @Inject Counter fieldCounter;
-    @Inject FakeDateProvider fakeDateProvider;
+    InjectedActivity injectedActivity;
+    @Inject
+    Counter fieldCounter;
+    @Inject
+    FakeDateProvider fakeDateProvider;
 
     @Before
     public void setUp() {
+        injectedActivity = new InjectedActivity();
         fakeDateProvider.setDate("December 8, 2010");
     }
 
@@ -34,12 +39,12 @@ public class InjectedActivityTest {
 
     @Test
     public void shouldInjectSingletons() throws Exception {
-        Counter instance = injectedActivity.getInjector().getInstance(Counter.class);
+        Counter instance = RoboGuice.getInjector(injectedActivity).getInstance(Counter.class);
         assertEquals(0, instance.count);
 
         instance.count++;
 
-        Counter instanceAgain = injectedActivity.getInjector().getInstance(Counter.class);
+        Counter instanceAgain = RoboGuice.getInjector(injectedActivity).getInstance(Counter.class);
         assertEquals(1, instanceAgain.count);
 
         assertSame(fieldCounter, instance);

@@ -1,15 +1,16 @@
 package com.pivotallabs.injected;
 
-import com.google.inject.Scopes;
 import android.util.Log;
-import roboguice.config.AbstractAndroidModule;
+import com.google.inject.AbstractModule;
+import com.google.inject.Scopes;
 import roboguice.util.Ln;
 
 import java.util.Date;
 
-public class RobolectricSampleTestModule extends AbstractAndroidModule {
+public class RobolectricSampleTestModule extends AbstractModule {
 
-    @Override protected void configure() {
+    @Override
+    protected void configure() {
         bind(Counter.class).in(Scopes.SINGLETON);
         bind(Date.class).toProvider(FakeDateProvider.class);
         bind(Ln.BaseConfig.class).toInstance(new RobolectricLoggerConfig());

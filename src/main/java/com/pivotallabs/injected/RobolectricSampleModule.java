@@ -1,9 +1,9 @@
 package com.pivotallabs.injected;
 
-import roboguice.config.AbstractAndroidModule;
+import com.google.inject.AbstractModule;
 
-public class RobolectricSampleModule extends AbstractAndroidModule {
-
-    @Override protected void configure() {
+public class RobolectricSampleModule extends AbstractModule {
+    @Override
+    protected void configure() {
     }
 }

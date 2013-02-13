@@ -1,11 +1,10 @@
 package com.pivotallabs.injected;
 
 import android.app.Application;
-import com.google.inject.Injector;
+import org.junit.runners.model.InitializationError;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.junit.runners.model.InitializationError;
-import roboguice.inject.ContextScope;
+import roboguice.RoboGuice;
 
 public class InjectedTestRunner extends RobolectricTestRunner {
 
@@ -13,20 +12,20 @@ public class InjectedTestRunner extends RobolectricTestRunner {
         super(testClass);
     }
 
-    @Override protected Application createApplication() {
-        SampleRoboApplication application = (SampleRoboApplication)super.createApplication();
+    @Override
+    protected Application createApplication() {
+        SampleRoboApplication application = (SampleRoboApplication) super.createApplication();
         application.setModule(new RobolectricSampleTestModule());
         return application;
     }
 
-    @Override public void prepareTest(Object test) {
+    @Override
+    public void prepareTest(Object test) {
         SampleRoboApplication application = (SampleRoboApplication) Robolectric.application;
 
-        //This project's application does not extend GuiceInjectableApplication therefore we need to enter the ContextScope manually.
-        Injector injector = application.getInjector();
-        ContextScope scope = injector.getInstance(ContextScope.class);
-        scope.enter(application);
+        RoboGuice.setBaseApplicationInjector(application, RoboGuice.DEFAULT_STAGE,
+                RoboGuice.newDefaultRoboModule(application), new RobolectricSampleTestModule());
 
-        injector.injectMembers(test);
+        RoboGuice.getInjector(application).injectMembers(test);
     }
 }

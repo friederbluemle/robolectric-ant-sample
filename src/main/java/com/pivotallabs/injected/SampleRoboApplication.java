@@ -1,18 +1,21 @@
 package com.pivotallabs.injected;
 
+import android.app.Application;
 import com.google.inject.Module;
-import roboguice.application.RoboApplication;
+import roboguice.RoboGuice;
 
-import java.util.List;
-
-public class SampleRoboApplication extends RoboApplication {
+public class SampleRoboApplication extends Application {
     private Module module = new RobolectricSampleModule();
-
-    @Override protected void addApplicationModules(List<Module> modules) {
-        modules.add(module);
-    }
 
     public void setModule(Module module) {
         this.module = module;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        RoboGuice.setBaseApplicationInjector(this, RoboGuice.DEFAULT_STAGE,
+                RoboGuice.newDefaultRoboModule(this), new RobolectricSampleModule());
     }
 }

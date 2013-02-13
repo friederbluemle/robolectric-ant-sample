@@ -1,9 +1,5 @@
 package com.pivotallabs.api;
 
-import com.google.inject.internal.Maps;
-import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.tester.org.apache.http.HttpRequestInfo;
 import org.apache.http.HttpRequest;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.client.CredentialsProvider;
@@ -15,13 +11,16 @@ import org.apache.http.entity.StringEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.tester.org.apache.http.HttpRequestInfo;
 
 import java.net.URI;
 import java.util.HashMap;
 
-import static org.robolectric.util.Strings.fromStream;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.robolectric.util.Strings.fromStream;
 
 @RunWith(RobolectricTestRunner.class)
 public class HttpTest {
@@ -37,14 +36,14 @@ public class HttpTest {
     public void testGet_FormsCorrectRequest_noBasicAuth() throws Exception {
         Robolectric.addPendingHttpResponse(200, "OK");
 
-        http.get("www.example.com", Maps.<String, String>newHashMap(), null, null);
+        http.get("www.example.com", new HashMap<String, String>(), null, null);
 
         assertThat(((HttpUriRequest) Robolectric.getSentHttpRequest(0)).getURI(), equalTo(URI.create("www.example.com")));
     }
 
     @Test
     public void testGet_shouldApplyCorrectHeaders() throws Exception {
-        HashMap<String,String> headers = Maps.newHashMap();
+        HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("foo", "bar");
         http.get("www.example.com", headers, null, null);
 
@@ -54,7 +53,7 @@ public class HttpTest {
 
     @Test
     public void testGet_ShouldUseCorrectHttpMethod() throws Exception {
-        http.get("www.example.com", Maps.<String, String>newHashMap(), null, null);
+        http.get("www.example.com", new HashMap<String, String>(), null, null);
         HttpUriRequest sentHttpRequest = (HttpUriRequest) Robolectric.getSentHttpRequest(0);
         assertThat(sentHttpRequest.getMethod(), equalTo(HttpGet.METHOD_NAME));
     }
@@ -62,7 +61,7 @@ public class HttpTest {
     @Test
     public void testGet_FormsCorrectRequest_withBasicAuth() throws Exception {
         Robolectric.addPendingHttpResponse(200, "OK");
-        http.get("www.example.com", Maps.<String, String>newHashMap(), "username", "password");
+        http.get("www.example.com", new HashMap<String, String>(), "username", "password");
         HttpRequestInfo sentHttpRequestData = Robolectric.getSentHttpRequestInfo(0);
 
         CredentialsProvider credentialsProvider =
@@ -75,7 +74,7 @@ public class HttpTest {
     public void shouldReturnCorrectResponse() throws Exception {
         Robolectric.addPendingHttpResponse(666, "it's all cool");
 
-        Http.Response response = http.get("www.example.com", Maps.<String, String>newHashMap(), null, null);
+        Http.Response response = http.get("www.example.com", new HashMap<String, String>(), null, null);
 
         assertThat(fromStream(response.getResponseBody()), equalTo("it's all cool"));
         assertThat(response.getStatusCode(), equalTo(666));
@@ -83,7 +82,7 @@ public class HttpTest {
 
     @Test
     public void testPost_ShouldUseCorrectMethod() throws Exception {
-        http.post("www.example.com", Maps.<String, String>newHashMap(), "a post body", null, null);
+        http.post("www.example.com", new HashMap<String, String>(), "a post body", null, null);
 
         HttpUriRequest sentHttpRequest = (HttpUriRequest) Robolectric.getSentHttpRequest(0);
         assertThat(sentHttpRequest.getMethod(), equalTo(HttpPost.METHOD_NAME));
@@ -91,7 +90,7 @@ public class HttpTest {
 
     @Test
     public void testPost_ShouldIncludePostBody() throws Exception {
-        http.post("www.example.com", Maps.<String, String>newHashMap(), "a post body", null, null);
+        http.post("www.example.com", new HashMap<String, String>(), "a post body", null, null);
 
         HttpPost sentHttpRequest = (HttpPost) Robolectric.getSentHttpRequest(0);
         StringEntity entity = (StringEntity) sentHttpRequest.getEntity();
