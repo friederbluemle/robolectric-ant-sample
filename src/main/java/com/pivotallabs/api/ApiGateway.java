@@ -45,19 +45,24 @@ public class ApiGateway {
                 Http.Response response;
                 if (HttpPost.METHOD_NAME.equals(apiRequest.getMethod())) {
                     response = http.post(apiRequest.getUrlString(), apiRequest.getHeaders(), apiRequest.getPostBody(), apiRequest.getUsername(), apiRequest.getPassword());
-                } else if(HttpGet.METHOD_NAME.equals(apiRequest.getMethod())) {
+                } else if (HttpGet.METHOD_NAME.equals(apiRequest.getMethod())) {
                     response = http.get(apiRequest.getUrlString(), apiRequest.getHeaders(), apiRequest.getUsername(), apiRequest.getPassword());
                 } else {
                     throw new RuntimeException("Unsupported Http Method!");
                 }
 
                 responseBody = response.getResponseBody();
-                return new ApiResponse(response.getStatusCode(), responseBody).parseResponse();
+                ApiResponse apiResponse = new ApiResponse(response.getStatusCode(), responseBody);
+                apiResponse.parseResponse();
+                return apiResponse;
             } catch (Exception e) {
                 return new ApiResponse(-1, null);
             } finally {
                 if (responseBody != null) {
-                    try { responseBody.close(); } catch (IOException ignored) { }
+                    try {
+                        responseBody.close();
+                    } catch (IOException ignored) {
+                    }
                 }
             }
         }

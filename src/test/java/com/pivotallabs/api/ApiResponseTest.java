@@ -32,7 +32,9 @@ public class ApiResponseTest {
 
     @Test
     public void parseResponse_shouldAssignAnXmlDocumentFromTheResponseBody() throws Exception {
-        Document responseDocument = new ApiResponse(200, asStream(TestResponses.AUTH_SUCCESS)).parseResponse().getResponseDocument();
+        ApiResponse apiResponse = new ApiResponse(200, asStream(TestResponses.AUTH_SUCCESS));
+        apiResponse.parseResponse();
+        Document responseDocument = apiResponse.getResponseDocument();
         assertThat(getTextContentOfChild(responseDocument, "guid"), equalTo("c93f12c"));
     }
 }

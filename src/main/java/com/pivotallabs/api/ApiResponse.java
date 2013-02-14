@@ -17,11 +17,10 @@ public class ApiResponse {
         this.responseBody = responseBody;
     }
 
-    ApiResponse parseResponse() throws IOException, SAXException, ParserConfigurationException {
+    void parseResponse() throws IOException, SAXException, ParserConfigurationException {
         if (isSuccess()) {
             document = Xmls.getDocument(responseBody);
         }
-        return this;
     }
 
     public int getResponseCode() {
