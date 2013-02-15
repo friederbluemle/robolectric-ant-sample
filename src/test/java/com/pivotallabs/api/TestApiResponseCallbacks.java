@@ -1,13 +1,13 @@
 package com.pivotallabs.api;
 
-public class TestApiResponseCallbacks implements ApiResponseCallbacks {
+public class TestApiResponseCallbacks implements ApiResponseCallbacks<XmlApiResponse> {
 
     public boolean onCompleteWasCalled;
-    public ApiResponse successResponse;
+    public XmlApiResponse successResponse;
     public ApiResponse failureResponse;
 
     @Override
-    public void onSuccess(ApiResponse successResponse) {
+    public void onSuccess(XmlApiResponse successResponse) {
         this.successResponse = successResponse;
     }
 

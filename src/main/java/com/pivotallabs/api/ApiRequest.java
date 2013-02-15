@@ -2,6 +2,7 @@ package com.pivotallabs.api;
 
 import org.apache.http.client.methods.HttpGet;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,4 +34,6 @@ public abstract class ApiRequest {
     public String getPassword() {
         return null;
     }
+
+    public abstract ApiResponse createResponse(int statusCode, InputStream responseBody);
 }

@@ -1,9 +1,6 @@
 package com.pivotallabs.api;
 
 import com.pivotallabs.util.Strings;
-import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.tester.org.apache.http.HttpRequestInfo;
 import org.apache.http.HttpRequest;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.client.CredentialsProvider;
@@ -14,6 +11,9 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.tester.org.apache.http.HttpRequestInfo;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -21,8 +21,7 @@ import java.util.Map;
 import static com.pivotallabs.TestResponses.GENERIC_XML;
 import static com.pivotallabs.util.Strings.asStream;
 import static com.pivotallabs.util.TestUtil.asString;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -39,7 +38,7 @@ public class ApiGatewayTest {
 
     @Test
     public void dispatch_shouldCallOntoTheSuccessWhenApiResponseIsSuccess() throws Exception {
-        ApiResponse apiResponse = new ApiResponse(200, asStream(GENERIC_XML));
+        XmlApiResponse apiResponse = new XmlApiResponse(200, asStream(GENERIC_XML));
         apiGateway.dispatch(apiResponse, responseCallbacks);
 
         assertThat(responseCallbacks.successResponse, sameInstance(apiResponse));
@@ -49,10 +48,10 @@ public class ApiGatewayTest {
 
     @Test
     public void dispatch_shouldCallOnFailureWhenApiResponseIsFailure() throws Exception {
-        ApiResponse apiResponse = new ApiResponse(500, asStream(GENERIC_XML));
+        XmlApiResponse apiResponse = new XmlApiResponse(500, asStream(GENERIC_XML));
         apiGateway.dispatch(apiResponse, responseCallbacks);
 
-        assertThat(responseCallbacks.failureResponse, sameInstance(apiResponse));
+        assertThat(responseCallbacks.failureResponse, sameInstance((ApiResponse) apiResponse));
         assertThat(responseCallbacks.successResponse, nullValue());
         assertThat(responseCallbacks.onCompleteWasCalled, equalTo(true));
     }
@@ -62,20 +61,22 @@ public class ApiGatewayTest {
         Robolectric.addPendingHttpResponse(200, "Invalid x-shmail");
         apiGateway.makeRequest(new TestGetRequest(), responseCallbacks);
         assertThat(responseCallbacks.successResponse, nullValue());
+        assertThat(responseCallbacks.failureResponse, not(nullValue()));
         assertThat(responseCallbacks.onCompleteWasCalled, equalTo(true));
     }
 
     @Test
     public void dispatch_shouldCallOnFailureWhenOnSuccessFails() throws Exception {
-        ApiResponse apiResponse = new ApiResponse(200, asStream(GENERIC_XML));
+        XmlApiResponse apiResponse = new XmlApiResponse(200, asStream(GENERIC_XML));
 
         TestApiResponseCallbacks callbacks = new TestApiResponseCallbacks() {
-            @Override public void onSuccess(ApiResponse successResponse) {
+            @Override
+            public void onSuccess(XmlApiResponse successResponse) {
                 throw new RuntimeException("boom!");
             }
         };
         apiGateway.dispatch(apiResponse, callbacks);
-        assertThat(callbacks.failureResponse, sameInstance(apiResponse));
+        assertThat(callbacks.failureResponse, sameInstance((ApiResponse) apiResponse));
         assertThat(callbacks.onCompleteWasCalled, equalTo(true));
     }
 
@@ -149,70 +150,94 @@ public class ApiGatewayTest {
     }
 
     private class TestGetRequest extends ApiRequest {
-        @Override public String getUrlString() {
+        @Override
+        public String getUrlString() {
             return "www.example.com";
         }
 
-        @Override public Map<String, String> getParameters() {
+        @Override
+        public Map<String, String> getParameters() {
             Map<String, String> parameters = super.getParameters();
             parameters.put("baz", "bang");
             return parameters;
         }
 
-        @Override public Map<String, String> getHeaders() {
+        @Override
+        public Map<String, String> getHeaders() {
             Map<String, String> headers = super.getHeaders();
             headers.put("foo", "bar");
             return headers;
         }
 
-        @Override public String getMethod() {
+        @Override
+        public String getMethod() {
             return HttpGet.METHOD_NAME;
         }
 
-        @Override public String getPostBody() {
+        @Override
+        public String getPostBody() {
             return super.getPostBody();
         }
 
-        @Override public String getUsername() {
+        @Override
+        public String getUsername() {
             return "spongebob";
         }
 
-        @Override public String getPassword() {
+        @Override
+        public String getPassword() {
             return "squarepants";
+        }
+
+        @Override
+        public ApiResponse createResponse(int statusCode, InputStream responseBody) {
+            return new XmlApiResponse(statusCode, responseBody);
         }
     }
 
     private class TestPostRequest extends ApiRequest {
-        @Override public String getUrlString() {
+        @Override
+        public String getUrlString() {
             return "www.example.com";
         }
 
-        @Override public Map<String, String> getParameters() {
+        @Override
+        public Map<String, String> getParameters() {
             Map<String, String> parameters = super.getParameters();
             parameters.put("baz", "bang");
             return parameters;
         }
 
-        @Override public Map<String, String> getHeaders() {
+        @Override
+        public Map<String, String> getHeaders() {
             Map<String, String> headers = super.getHeaders();
             headers.put("foo", "bar");
             return headers;
         }
 
-        @Override public String getMethod() {
+        @Override
+        public String getMethod() {
             return HttpPost.METHOD_NAME;
         }
 
-        @Override public String getPostBody() {
+        @Override
+        public String getPostBody() {
             return "post body content";
         }
 
-        @Override public String getUsername() {
+        @Override
+        public String getUsername() {
             return "spongebob";
         }
 
-        @Override public String getPassword() {
+        @Override
+        public String getPassword() {
             return "squarepants";
+        }
+
+        @Override
+        public ApiResponse createResponse(int statusCode, InputStream responseBody) {
+            return new XmlApiResponse(statusCode, responseBody);
         }
     }
 }

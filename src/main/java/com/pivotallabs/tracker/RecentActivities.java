@@ -5,6 +5,7 @@ import com.pivotallabs.MultiCallbacks;
 import com.pivotallabs.api.ApiGateway;
 import com.pivotallabs.api.ApiResponse;
 import com.pivotallabs.api.ApiResponseCallbacks;
+import com.pivotallabs.api.XmlApiResponse;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -29,7 +30,7 @@ public class RecentActivities extends ArrayList<RecentActivity> {
                 new RecentActivityApiResponseCallbacks(multiCallbacks));
     }
 
-    private class RecentActivityApiResponseCallbacks implements ApiResponseCallbacks {
+    private class RecentActivityApiResponseCallbacks implements ApiResponseCallbacks<XmlApiResponse> {
         private Callbacks callbacks;
 
         public RecentActivityApiResponseCallbacks(Callbacks callbacks) {
@@ -37,7 +38,7 @@ public class RecentActivities extends ArrayList<RecentActivity> {
         }
 
         @Override
-        public void onSuccess(ApiResponse response) {
+        public void onSuccess(XmlApiResponse response) {
             clear();
             NodeList activityNodeList = response.getResponseDocument().getElementsByTagName("activity");
             for (int i = 0; i < activityNodeList.getLength(); i++) {

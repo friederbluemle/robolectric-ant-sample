@@ -1,6 +1,10 @@
 package com.pivotallabs.tracker;
 
 import com.pivotallabs.api.ApiRequest;
+import com.pivotallabs.api.ApiResponse;
+import com.pivotallabs.api.XmlApiResponse;
+
+import java.io.InputStream;
 
 
 class TrackerAuthenticationRequest extends ApiRequest {
@@ -25,6 +29,11 @@ class TrackerAuthenticationRequest extends ApiRequest {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public ApiResponse createResponse(int statusCode, InputStream responseBody) {
+        return new XmlApiResponse(statusCode, responseBody);
     }
 
     @Override

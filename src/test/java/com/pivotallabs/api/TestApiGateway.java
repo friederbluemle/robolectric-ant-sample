@@ -21,8 +21,8 @@ public class TestApiGateway extends ApiGateway {
 
     public void simulateResponse(int httpCode, String responseBody) throws IOException, SAXException, ParserConfigurationException {
         ensurePendingRequests();
-        ApiResponse apiResponse = new ApiResponse(httpCode, asStream(responseBody));
-        apiResponse.parseResponse();
+        XmlApiResponse apiResponse = new XmlApiResponse(httpCode, asStream(responseBody));
+        apiResponse.consumeResponse();
         dispatch(apiResponse, unshiftEarliestRequest().b);
     }
 

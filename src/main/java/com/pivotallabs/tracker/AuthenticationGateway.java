@@ -3,10 +3,7 @@ package com.pivotallabs.tracker;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.pivotallabs.Callbacks;
-import com.pivotallabs.api.ApiGateway;
-import com.pivotallabs.api.ApiResponse;
-import com.pivotallabs.api.ApiResponseCallbacks;
-import com.pivotallabs.api.Xmls;
+import com.pivotallabs.api.*;
 import com.pivotallabs.util.Strings;
 
 import java.io.IOException;
@@ -40,7 +37,7 @@ public class AuthenticationGateway {
         return sharedPreferences.getString(GUID_KEY, "");
     }
 
-    private static class AuthenticationApiResponseCallbacks implements ApiResponseCallbacks {
+    private static class AuthenticationApiResponseCallbacks implements ApiResponseCallbacks<XmlApiResponse> {
         private Callbacks callbacks;
         private SharedPreferences sharedPreferences;
 
@@ -50,7 +47,7 @@ public class AuthenticationGateway {
         }
 
         @Override
-        public void onSuccess(ApiResponse response) throws IOException {
+        public void onSuccess(XmlApiResponse response) throws IOException {
             String guid = Xmls.getTextContentOfChild(response.getResponseDocument(), "guid");
             sharedPreferences.edit().putString(GUID_KEY, guid).commit();
             callbacks.onSuccess();

@@ -52,11 +52,11 @@ public class ApiGateway {
                 }
 
                 responseBody = response.getResponseBody();
-                ApiResponse apiResponse = new ApiResponse(response.getStatusCode(), responseBody);
-                apiResponse.parseResponse();
+                ApiResponse apiResponse = apiRequest.createResponse(response.getStatusCode(), responseBody);
+                apiResponse.consumeResponse();
                 return apiResponse;
             } catch (Exception e) {
-                return new ApiResponse(-1, null);
+                return new ErrorApiResponse();
             } finally {
                 if (responseBody != null) {
                     try {
@@ -70,6 +70,16 @@ public class ApiGateway {
         @Override
         protected void onPostExecute(ApiResponse apiResponse) {
             dispatch(apiResponse, responseCallbacks);
+        }
+    }
+
+    private class ErrorApiResponse extends ApiResponse {
+        public ErrorApiResponse() {
+            super(-1, null);
+        }
+
+        @Override
+        void consumeResponse() {
         }
     }
 }
