@@ -1,13 +1,12 @@
 package com.pivotallabs.tracker;
 
 import com.pivotallabs.api.ApiRequest;
-import com.pivotallabs.api.ApiResponse;
 import com.pivotallabs.api.XmlApiResponse;
 
 import java.io.InputStream;
 import java.util.Map;
 
-public class RecentActivityRequest extends ApiRequest {
+public class RecentActivityRequest extends ApiRequest<XmlApiResponse> {
     private String token;
 
     public RecentActivityRequest(String token) {
@@ -28,7 +27,7 @@ public class RecentActivityRequest extends ApiRequest {
     }
 
     @Override
-    public ApiResponse createResponse(int statusCode, InputStream responseBody) {
+    public XmlApiResponse createResponse(int statusCode, InputStream responseBody) {
         return new XmlApiResponse(statusCode, responseBody);
     }
 

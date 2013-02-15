@@ -84,7 +84,7 @@ public class ApiGatewayTest {
     public void shouldMakeRemoteGetCalls() {
         Robolectric.getBackgroundScheduler().pause();
 
-        ApiRequest apiRequest = new TestGetRequest();
+        TestGetRequest apiRequest = new TestGetRequest();
         apiGateway.makeRequest(apiRequest, responseCallbacks);
 
         Robolectric.addPendingHttpResponse(200, GENERIC_XML);
@@ -108,7 +108,7 @@ public class ApiGatewayTest {
     public void shouldMakeRemotePostCalls() throws Exception {
         Robolectric.getBackgroundScheduler().pause();
 
-        ApiRequest apiRequest = new TestPostRequest();
+        TestPostRequest apiRequest = new TestPostRequest();
         apiGateway.makeRequest(apiRequest, responseCallbacks);
 
         Robolectric.addPendingHttpResponse(200, GENERIC_XML);
@@ -149,7 +149,7 @@ public class ApiGatewayTest {
         assertThat(asString(responseCallbacks.successResponse.getResponseDocument()), equalTo(GENERIC_XML));
     }
 
-    private class TestGetRequest extends ApiRequest {
+    private class TestGetRequest extends ApiRequest<XmlApiResponse> {
         @Override
         public String getUrlString() {
             return "www.example.com";
@@ -190,7 +190,7 @@ public class ApiGatewayTest {
         }
 
         @Override
-        public ApiResponse createResponse(int statusCode, InputStream responseBody) {
+        public XmlApiResponse createResponse(int statusCode, InputStream responseBody) {
             return new XmlApiResponse(statusCode, responseBody);
         }
     }

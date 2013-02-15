@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ApiRequest {
+public abstract class ApiRequest<T extends ApiResponse> {
     public String method = HttpGet.METHOD_NAME;
 
     public abstract String getUrlString();
@@ -35,5 +35,5 @@ public abstract class ApiRequest {
         return null;
     }
 
-    public abstract ApiResponse createResponse(int statusCode, InputStream responseBody);
+    public abstract T createResponse(int statusCode, InputStream responseBody);
 }

@@ -12,7 +12,7 @@ public class ApiGateway {
 
     private final Http http = new Http();
 
-    public void makeRequest(ApiRequest apiRequest, final ApiResponseCallbacks responseCallbacks) {
+    public <T extends ApiResponse> void makeRequest(ApiRequest<T> apiRequest, final ApiResponseCallbacks<T> responseCallbacks) {
         new RemoteCallTask(responseCallbacks).execute(apiRequest);
     }
 
@@ -56,7 +56,7 @@ public class ApiGateway {
                 apiResponse.consumeResponse();
                 return apiResponse;
             } catch (Exception e) {
-                return new ErrorApiResponse();
+                return apiRequest.createResponse(-1, null);
             } finally {
                 if (responseBody != null) {
                     try {
@@ -70,16 +70,6 @@ public class ApiGateway {
         @Override
         protected void onPostExecute(ApiResponse apiResponse) {
             dispatch(apiResponse, responseCallbacks);
-        }
-    }
-
-    private class ErrorApiResponse extends ApiResponse {
-        public ErrorApiResponse() {
-            super(-1, null);
-        }
-
-        @Override
-        void consumeResponse() {
         }
     }
 }
