@@ -2,7 +2,6 @@ package com.pivotallabs.api;
 
 import org.apache.http.client.methods.HttpGet;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,5 +34,5 @@ public abstract class ApiRequest<T extends ApiResponse> {
         return null;
     }
 
-    public abstract T createResponse(int statusCode, InputStream responseBody);
+    public abstract T createResponse(int statusCode);
 }

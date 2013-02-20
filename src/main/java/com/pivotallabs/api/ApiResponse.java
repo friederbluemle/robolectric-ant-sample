@@ -4,14 +4,12 @@ import java.io.InputStream;
 
 public abstract class ApiResponse {
     protected int httpResponseCode;
-    protected InputStream responseBody;
 
-    public ApiResponse(int httpCode, InputStream responseBody) {
-        this.responseBody = responseBody;
+    public ApiResponse(int httpCode) {
         this.httpResponseCode = httpCode;
     }
 
-    abstract void consumeResponse() throws Exception;
+    abstract void consumeResponse(InputStream responseBody) throws Exception;
 
     public int getResponseCode() {
         return httpResponseCode;

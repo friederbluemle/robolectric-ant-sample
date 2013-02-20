@@ -52,11 +52,11 @@ public class ApiGateway {
                 }
 
                 responseBody = response.getResponseBody();
-                ApiResponse apiResponse = apiRequest.createResponse(response.getStatusCode(), responseBody);
-                apiResponse.consumeResponse();
+                ApiResponse apiResponse = apiRequest.createResponse(response.getStatusCode());
+                apiResponse.consumeResponse(responseBody);
                 return apiResponse;
             } catch (Exception e) {
-                return apiRequest.createResponse(-1, null);
+                return apiRequest.createResponse(-1);
             } finally {
                 if (responseBody != null) {
                     try {

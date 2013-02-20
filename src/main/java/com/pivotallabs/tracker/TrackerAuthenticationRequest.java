@@ -3,8 +3,6 @@ package com.pivotallabs.tracker;
 import com.pivotallabs.api.ApiRequest;
 import com.pivotallabs.api.XmlApiResponse;
 
-import java.io.InputStream;
-
 
 class TrackerAuthenticationRequest extends ApiRequest<XmlApiResponse> {
     private String username;
@@ -31,8 +29,8 @@ class TrackerAuthenticationRequest extends ApiRequest<XmlApiResponse> {
     }
 
     @Override
-    public XmlApiResponse createResponse(int statusCode, InputStream responseBody) {
-        return new XmlApiResponse(statusCode, responseBody);
+    public XmlApiResponse createResponse(int statusCode) {
+        return new XmlApiResponse(statusCode);
     }
 
     @Override

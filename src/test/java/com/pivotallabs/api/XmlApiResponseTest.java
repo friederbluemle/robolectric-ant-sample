@@ -12,8 +12,8 @@ import static org.junit.Assert.assertThat;
 public class XmlApiResponseTest {
     @Test
     public void parseResponse_shouldAssignAnXmlDocumentFromTheResponseBody() throws Exception {
-        XmlApiResponse apiResponse = new XmlApiResponse(200, asStream(TestResponses.AUTH_SUCCESS));
-        apiResponse.consumeResponse();
+        XmlApiResponse apiResponse = new XmlApiResponse(200);
+        apiResponse.consumeResponse(asStream(TestResponses.AUTH_SUCCESS));
         Document responseDocument = apiResponse.getResponseDocument();
         assertThat(getTextContentOfChild(responseDocument, "guid"), equalTo("c93f12c"));
     }

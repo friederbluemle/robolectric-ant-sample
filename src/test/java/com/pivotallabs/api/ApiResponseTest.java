@@ -30,11 +30,11 @@ public class ApiResponseTest {
 
     private class TestApiResponse extends ApiResponse {
         public TestApiResponse(int responseCode, InputStream responseBody) {
-            super(responseCode, responseBody);
+            super(responseCode);
         }
 
         @Override
-        void consumeResponse() throws Exception {
+        void consumeResponse(InputStream responseBody) throws Exception {
         }
     }
 }

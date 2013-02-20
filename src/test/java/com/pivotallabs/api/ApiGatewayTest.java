@@ -19,9 +19,10 @@ import java.io.InputStream;
 import java.util.Map;
 
 import static com.pivotallabs.TestResponses.GENERIC_XML;
-import static com.pivotallabs.util.Strings.asStream;
 import static com.pivotallabs.util.TestUtil.asString;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -38,7 +39,7 @@ public class ApiGatewayTest {
 
     @Test
     public void dispatch_shouldCallOntoTheSuccessWhenApiResponseIsSuccess() throws Exception {
-        XmlApiResponse apiResponse = new XmlApiResponse(200, asStream(GENERIC_XML));
+        XmlApiResponse apiResponse = new XmlApiResponse(200);
         apiGateway.dispatch(apiResponse, responseCallbacks);
 
         assertThat(responseCallbacks.successResponse, sameInstance(apiResponse));
@@ -48,7 +49,7 @@ public class ApiGatewayTest {
 
     @Test
     public void dispatch_shouldCallOnFailureWhenApiResponseIsFailure() throws Exception {
-        XmlApiResponse apiResponse = new XmlApiResponse(500, asStream(GENERIC_XML));
+        XmlApiResponse apiResponse = new XmlApiResponse(500);
         apiGateway.dispatch(apiResponse, responseCallbacks);
 
         assertThat(responseCallbacks.failureResponse, sameInstance((ApiResponse) apiResponse));
@@ -67,7 +68,7 @@ public class ApiGatewayTest {
 
     @Test
     public void dispatch_shouldCallOnFailureWhenOnSuccessFails() throws Exception {
-        XmlApiResponse apiResponse = new XmlApiResponse(200, asStream(GENERIC_XML));
+        XmlApiResponse apiResponse = new XmlApiResponse(200);
 
         TestApiResponseCallbacks callbacks = new TestApiResponseCallbacks() {
             @Override
@@ -190,8 +191,8 @@ public class ApiGatewayTest {
         }
 
         @Override
-        public XmlApiResponse createResponse(int statusCode, InputStream responseBody) {
-            return new XmlApiResponse(statusCode, responseBody);
+        public XmlApiResponse createResponse(int statusCode) {
+            return new XmlApiResponse(statusCode);
         }
     }
 
@@ -236,8 +237,8 @@ public class ApiGatewayTest {
         }
 
         @Override
-        public ApiResponse createResponse(int statusCode, InputStream responseBody) {
-            return new XmlApiResponse(statusCode, responseBody);
+        public ApiResponse createResponse(int statusCode) {
+            return new XmlApiResponse(statusCode);
         }
     }
 }

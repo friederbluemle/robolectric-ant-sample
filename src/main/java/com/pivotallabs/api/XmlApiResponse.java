@@ -10,12 +10,12 @@ import java.io.InputStream;
 public class XmlApiResponse extends ApiResponse {
     private Document document;
 
-    public XmlApiResponse(int httpCode, InputStream responseBody) {
-        super(httpCode, responseBody);
+    public XmlApiResponse(int httpCode) {
+        super(httpCode);
     }
 
     @Override
-    void consumeResponse() throws IOException, SAXException, ParserConfigurationException {
+    void consumeResponse(InputStream responseBody) throws IOException, SAXException, ParserConfigurationException {
         if (isSuccess()) {
             document = Xmls.getDocument(responseBody);
         }
