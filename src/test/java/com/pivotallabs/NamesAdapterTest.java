@@ -3,10 +3,11 @@ package com.pivotallabs;
 import android.app.Activity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import org.robolectric.RobolectricTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 
 import java.util.ArrayList;
 
@@ -56,7 +57,7 @@ public class NamesAdapterTest {
 
     @Test
     public void shouldRecycleProvidedViews() throws Exception {
-        TextView existingView = new TextView(null);
+        TextView existingView = new TextView(Robolectric.application);
         TextView nameView = (TextView) namesAdapter.getView(2, existingView, new LinearLayout(new Activity()));
         assertThat(nameView, sameInstance(existingView));
     }
