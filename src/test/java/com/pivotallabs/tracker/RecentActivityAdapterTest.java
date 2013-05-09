@@ -5,10 +5,11 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.pivotallabs.R;
-import org.robolectric.RobolectricTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 
 import java.util.ArrayList;
 
@@ -30,7 +31,7 @@ public class RecentActivityAdapterTest {
         recentActivities.add(recentActivity);
 
         LayoutInflater layoutInflater = new Activity().getLayoutInflater();
-        parent = new LinearLayout(null);
+        parent = new LinearLayout(Robolectric.application);
         recycleView = (TextView) layoutInflater.inflate(R.layout.activity_summary, parent);
         adapter = new RecentActivityAdapter(recentActivities, layoutInflater);
     }

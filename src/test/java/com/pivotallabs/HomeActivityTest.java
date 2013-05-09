@@ -66,7 +66,8 @@ public class HomeActivityTest {
     @Test
     public void shouldHaveALogo() throws Exception {
         assertThat(pivotalLogo.getVisibility(), equalTo(View.VISIBLE));
-        assertThat(shadowOf(pivotalLogo).getResourceId(), equalTo(R.drawable.pivotallabs_logo));
+        assertThat(shadowOf(pivotalLogo.getDrawable()).getLoadedFromResourceId(),
+                equalTo(R.drawable.pivotallabs_logo));
     }
 
     @Test

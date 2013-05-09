@@ -2,10 +2,11 @@ package com.pivotallabs;
 
 import android.view.View;
 import android.widget.EditText;
-import org.robolectric.RobolectricTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -18,9 +19,9 @@ public class ViewEnablingTextWatcherTest {
 
     @Before
     public void setUp() throws Exception {
-        toEnable = new View(null);
-        editText1 = new EditText(null);
-        editText2 = new EditText(null);
+        toEnable = new View(Robolectric.application);
+        editText1 = new EditText(Robolectric.application);
+        editText2 = new EditText(Robolectric.application);
         toEnable.setEnabled(false);
         new ViewEnablingTextWatcher(toEnable, editText1, editText2);
     }

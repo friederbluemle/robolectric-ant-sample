@@ -3,10 +3,11 @@ package com.pivotallabs;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import org.robolectric.RobolectricTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 
 import java.util.ArrayList;
 
@@ -50,8 +51,8 @@ public class GenericAdapterTest {
 
     @Test
     public void getView_shouldCallThroughToGetView() throws Exception {
-        View convertView = new View(null);
-        ViewGroup parent = new LinearLayout(null);
+        View convertView = new View(Robolectric.application);
+        ViewGroup parent = new LinearLayout(Robolectric.application);
 
         adapter.getView(1, convertView, parent);
         
