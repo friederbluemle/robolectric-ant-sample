@@ -6,18 +6,19 @@ import android.widget.Button;
 import android.widget.ImageView;
 import com.pivotallabs.injected.InjectedActivity;
 import com.pivotallabs.tracker.RecentActivityActivity;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.shadows.ShadowActivity;
-import org.robolectric.shadows.ShadowIntent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowIntent;
 
-import static org.robolectric.Robolectric.clickOn;
-import static org.robolectric.Robolectric.shadowOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.robolectric.Robolectric.clickOn;
+import static org.robolectric.Robolectric.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 public class HomeActivityTest {
@@ -29,8 +30,7 @@ public class HomeActivityTest {
 
     @Before
     public void setUp() throws Exception {
-        activity = new HomeActivity();
-        activity.onCreate(null);
+        activity = Robolectric.buildActivity(HomeActivity.class).create().get();
         pressMeButton = (Button) activity.findViewById(R.id.press_me_button);
         trackerRecentActivityButton = (Button) activity.findViewById(R.id.tracker_recent_activity);
         injectedActivityButton = (Button) activity.findViewById(R.id.injected_activity_button);
