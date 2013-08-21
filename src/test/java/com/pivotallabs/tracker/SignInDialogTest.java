@@ -8,6 +8,7 @@ import com.pivotallabs.R;
 import com.pivotallabs.TestResponses;
 import com.pivotallabs.api.ApiRequest;
 import com.pivotallabs.api.TestApiGateway;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.shadows.ShadowAlertDialog;
 import org.junit.Before;
@@ -32,7 +33,8 @@ public class SignInDialogTest {
     @Before
     public void setUp() throws Exception {
         apiGateway = new TestApiGateway();
-        signInDialog = new SignInDialog(new Activity(), new AuthenticationGateway(apiGateway, new Activity()));
+        Activity context = Robolectric.buildActivity(Activity.class).create().get();
+        signInDialog = new SignInDialog(context, new AuthenticationGateway(apiGateway, context));
 
         signInDialog.show();
 
