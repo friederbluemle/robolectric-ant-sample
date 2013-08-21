@@ -8,12 +8,14 @@ import com.pivotallabs.R;
 import com.pivotallabs.TestResponses;
 import com.pivotallabs.api.ApiRequest;
 import com.pivotallabs.api.TestApiGateway;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.tester.android.view.TestMenu;
 import org.robolectric.tester.android.view.TestMenuItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.util.ActivityController;
 
 import static com.pivotallabs.TestHelper.signIn;
 import static org.robolectric.Robolectric.shadowOf;
@@ -139,8 +141,10 @@ public class RecentActivityActivityTest {
 
     private void createActivity() {
         apiGateway = new TestApiGateway();
-        activity = new RecentActivityActivity();
+        ActivityController<RecentActivityActivity> activityController = Robolectric.buildActivity(RecentActivityActivity.class);
+        activity = activityController.get();
         activity.apiGateway = apiGateway;
-        activity.onCreate(null);
+
+        activityController.create();
     }
 }

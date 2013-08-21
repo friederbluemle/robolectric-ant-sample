@@ -30,9 +30,9 @@ public class RecentActivityAdapterTest {
         recentActivities.add(new RecentActivity().setDescription("bar"));
         recentActivities.add(recentActivity);
 
-        LayoutInflater layoutInflater = new Activity().getLayoutInflater();
+        LayoutInflater layoutInflater = Robolectric.buildActivity(Activity.class).create().get().getLayoutInflater();
         parent = new LinearLayout(Robolectric.application);
-        recycleView = (TextView) layoutInflater.inflate(R.layout.activity_summary, parent);
+        recycleView = (TextView) layoutInflater.inflate(R.layout.activity_summary, parent, false);
         adapter = new RecentActivityAdapter(recentActivities, layoutInflater);
     }
 
