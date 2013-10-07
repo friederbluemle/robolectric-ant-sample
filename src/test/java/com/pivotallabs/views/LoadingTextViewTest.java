@@ -8,6 +8,7 @@ import com.pivotallabs.R;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -21,7 +22,8 @@ public class LoadingTextViewTest {
 
     @Before
     public void setUp() throws Exception {
-        loadingTextView = (LoadingTextView) LayoutInflater.from(new Activity()).inflate(R.layout.loading_text, null);
+        Activity activity = Robolectric.buildActivity(Activity.class).create().get();
+        loadingTextView = (LoadingTextView) LayoutInflater.from(activity).inflate(R.layout.loading_text, null);
         loadingSpinner = loadingTextView.findViewById(R.id.loading_text_spinner);
         loadingTextTextView = (TextView) loadingTextView.findViewById(R.id.loading_text_text_view);
     }

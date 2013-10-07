@@ -30,7 +30,7 @@ public class HomeActivityTest {
 
     @Before
     public void setUp() throws Exception {
-        activity = Robolectric.buildActivity(HomeActivity.class).create().get();
+        activity = Robolectric.buildActivity(HomeActivity.class).create().visible().get();
         pressMeButton = (Button) activity.findViewById(R.id.press_me_button);
         trackerRecentActivityButton = (Button) activity.findViewById(R.id.tracker_recent_activity);
         injectedActivityButton = (Button) activity.findViewById(R.id.injected_activity_button);
@@ -66,7 +66,7 @@ public class HomeActivityTest {
     @Test
     public void shouldHaveALogo() throws Exception {
         assertThat(pivotalLogo.getVisibility(), equalTo(View.VISIBLE));
-        assertThat(shadowOf(pivotalLogo.getDrawable()).getLoadedFromResourceId(),
+        assertThat(shadowOf(pivotalLogo.getDrawable()).getCreatedFromResId(),
                 equalTo(R.drawable.pivotallabs_logo));
     }
 

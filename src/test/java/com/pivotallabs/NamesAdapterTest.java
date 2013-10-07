@@ -51,14 +51,16 @@ public class NamesAdapterTest {
 
     @Test
     public void testGetView() throws Exception {
-        TextView nameView = (TextView) namesAdapter.getView(1, null, new LinearLayout(new Activity()));
+        Activity activity = Robolectric.buildActivity(Activity.class).create().get();
+        TextView nameView = (TextView) namesAdapter.getView(1, null, new LinearLayout(activity));
         assertThat(nameView.getText().toString(), equalTo("Heidi Montag"));
     }
 
     @Test
     public void shouldRecycleProvidedViews() throws Exception {
+        Activity activity = Robolectric.buildActivity(Activity.class).create().get();
         TextView existingView = new TextView(Robolectric.application);
-        TextView nameView = (TextView) namesAdapter.getView(2, existingView, new LinearLayout(new Activity()));
+        TextView nameView = (TextView) namesAdapter.getView(2, existingView, new LinearLayout(activity));
         assertThat(nameView, sameInstance(existingView));
     }
 }

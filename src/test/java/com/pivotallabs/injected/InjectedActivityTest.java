@@ -3,10 +3,12 @@ package com.pivotallabs.injected;
 import android.content.Context;
 import android.widget.TextView;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.pivotallabs.R;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import roboguice.RoboGuice;
 
@@ -26,13 +28,12 @@ public class InjectedActivityTest {
 
     @Before
     public void setUp() {
-        injectedActivity = new InjectedActivity();
         fakeDateProvider.setDate("December 8, 2010");
+        injectedActivity = Robolectric.buildActivity(InjectedActivity.class).create().get();
     }
 
     @Test
     public void shouldAssignStringToTextView() throws Exception {
-        injectedActivity.onCreate(null);
         TextView injectedTextView = (TextView) injectedActivity.findViewById(R.id.injected_text_view);
         assertThat(injectedTextView.getText().toString(),
                 equalTo("Roboguice Activity tested with Robolectric - December 8, 2010"));
