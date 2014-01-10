@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="RoblectricSample" default="help">
+<project name="RobolectricAntSample" default="help">
 
     <!-- The local.properties file is created and updated by the 'android' tool.
          It contains the path to the SDK. It should *NOT* be checked into
          Version Control Systems. -->
-    <loadproperties srcFile="local.properties"/>
+    <property file="local.properties" />
 
     <!-- The ant.properties file can be created by you. It is only edited by the
          'android' tool to add properties to it.
@@ -26,7 +26,16 @@
          application and should be checked into Version Control Systems.
 
          -->
-    <property file="ant.properties"/>
+    <property file="ant.properties" />
+
+    <!-- if sdk.dir was not set from one of the property file, then
+         get it from the ANDROID_HOME env var.
+         This must be done before we load project.properties since
+         the proguard config can use sdk.dir -->
+    <property environment="env" />
+    <condition property="sdk.dir" value="${env.ANDROID_HOME}">
+        <isset property="env.ANDROID_HOME" />
+    </condition>
 
     <!-- The project.properties file is created and updated by the 'android'
          tool, as well as ADT.
@@ -37,29 +46,27 @@
 
          This file is an integral part of the build system for your
          application and should be checked into Version Control Systems. -->
-    <loadproperties srcFile="project.properties"/>
+    <loadproperties srcFile="project.properties" />
 
     <!-- quick check on sdk.dir -->
     <fail
-        message="sdk.dir is missing. Make sure to generate local.properties using 'android update project'"
-        unless="sdk.dir"
-        />
+            message="sdk.dir is missing. Make sure to generate local.properties using 'android update project' or to inject it through the ANDROID_HOME environment variable."
+            unless="sdk.dir"
+    />
 
-
-    <!-- extension targets. Uncomment the ones where you want to do custom work
-in between standard targets -->
     <!--
-        <target name="-pre-build">
-        </target>
-        <target name="-pre-compile">
-        </target>
-
-        /* This is typically used for code obfuscation.
-           Compiled code location: ${out.classes.absolute.dir}
-           If this is not done in place, override ${out.dex.input.absolute.dir} */
-        <target name="-post-compile">
-        </target>
+        Import per project custom build rules if present at the root of the project.
+        This is the place to put custom intermediary targets such as:
+            -pre-build
+            -pre-compile
+            -post-compile (This is typically used for code obfuscation.
+                           Compiled code location: ${out.classes.absolute.dir}
+                           If this is not done in place, override ${out.dex.input.absolute.dir})
+            -post-package
+            -post-build
+            -pre-clean
     -->
+    <import file="custom_rules.xml" optional="true" />
 
     <!-- Import the actual build file.
 
@@ -80,110 +87,6 @@ in between standard targets -->
          in order to avoid having your file be overridden by tools such as "android update project"
     -->
     <!-- version-tag: 1 -->
-    <import file="${sdk.dir}/tools/ant/build.xml"/>
+    <import file="${sdk.dir}/tools/ant/build.xml" />
 
-    <property name="test.absolute.dir" location="${test.dir}"/>
-    <property name="out.test-classes.dir" value="${out.absolute.dir}/testClasses"/>
-    <property name="out.test-classes.absolute.dir" value="${out.test-classes.dir}"/>
-    <property name="test.external.libs.absolute.dir" location="${test.external.libs.dir}"/>
-    <property name="publish.dir" location="${out.absolute.dir}/publish"/>
-
-    <property environment="env"/>
-    <condition property="build.number" value="${env.BUILD_NUMBER}" else="unknown">
-        <isset property="env.BUILD_NUMBER"/>
-    </condition>
-    <exec executable="date" outputproperty="build.date"/>
-
-    <target name="-pre-compile">
-        <!-- android uses this property for its generated testing framework. We'll set it manually.-->
-        <property name="tested.project.absolute.dir" location="." />
-        <property name="tested.project.test.absolute.dir" location="${tested.project.absolute.dir}/src/test/java" />
-        <property name="out.test.classes.absolute.dir" location="${out.dir}/testClasses" />
-    </target>
-
-    <target name="compile.tests" depends="-set-debug-files, -set-debug-mode, -compile">
-        <mkdir dir="${out.test.classes.absolute.dir}"/>
-
-        <path id="project.javac.classpath">
-            <path refid="project.all.jars.path"/>
-            <path refid="tested.project.classpath"/>
-            <pathelement path="${sdk.dir}/extras/android/support/v4/android-support-v4.jar"/>
-        </path>
-
-        <javac encoding="${java.encoding}"
-               source="${java.source}"
-               target="${java.target}"
-               debug="true"
-               extdirs=""
-               destdir="${out.test.classes.absolute.dir}"
-               bootclasspathref="project.target.class.path"
-               verbose="${verbose}"
-               classpathref="project.javac.classpath"
-               includeantruntime="false">
-            <src path="${source.absolute.dir}" />
-            <src path="${gen.absolute.dir}" />
-
-            <!-- test src -->
-            <src path="${tested.project.test.absolute.dir}"/>
-            <classpath>
-                <pathelement path="${out.classes.absolute.dir}"/>
-                <fileset dir="${jar.libs.dir}" includes="*.jar"/>
-                <fileset dir="${tested.project.absolute.dir}/lib/test" includes="**/*.jar"/>
-            </classpath>
-        </javac>
-    </target>
-
-    <target name="-pre-clean" description="cleanup module">
-        <delete dir="${out.test-classes.absolute.dir}"/>
-        <delete dir="${tmp.dir}"/>
-    </target>
-
-    <target name="test" depends="compile.tests" description="test all">
-        <mkdir dir="${basedir}/out/reports/tests"/>
-        <junit showoutput="true" failureproperty="junit.failure">
-            <formatter type="plain"/>
-            <formatter type="xml"/>
-            <batchtest todir="${basedir}/out/reports/tests">
-                <fileset dir="${test.absolute.dir}">
-                    <include name="**/*Test.java"/>
-                </fileset>
-            </batchtest>
-            <classpath>
-                <pathelement path="${out.classes.absolute.dir}"/>
-                <pathelement path="${out.test-classes.absolute.dir}"/>
-                <fileset dir="${test.external.libs.absolute.dir}" includes="*.jar"/>
-                <fileset dir="${jar.libs.dir}" includes="*.jar"/>
-                <path refid="project.target.class.path"/>
-                <pathelement path="${sdk.dir}/extras/android/support/v4/android-support-v4.jar"/>
-            </classpath>
-        </junit>
-        <fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
-    </target>
-
-    <target name="maven-setup" depends="maven-set-android-sdk, maven-install-jars"
-            description="Set the path to the Android SDK and install jars"/>
-
-    <target name="maven-install-jars" description="Install the jar files that Maven can't find for itself">
-        <exec executable="mvn">
-            <arg
-                line="install:install-file -DgroupId=com.google.inject -DartifactId=guice -Dversion=2.0 -Dclassifier=no-aop -Dpackaging=jar -Dfile=lib/main/guice-2.0-no_aop.jar"/>
-        </exec>
-        <exec executable="mvn">
-            <arg
-                line="install:install-file -DgroupId=com.google.android.maps -DartifactId=maps -Dversion=8_r2 -Dpackaging=jar -Dfile=${sdk.dir}/add-ons/addon_google_apis_google_inc_8/libs/maps.jar"/>
-        </exec>
-    </target>
-
-    <target name="maven-set-android-sdk" description="Set the path to the Android SDK in the pom.xml file">
-        <copy file="pom.xml" tofile="pom.xml.tmp">
-            <filterchain>
-                <tokenfilter>
-                    <replacestring from="&lt;!--&lt;path&gt;&lt;/path&gt;--&gt;"
-                                   to="&lt;path&gt;${sdk.dir}&lt;/path&gt;"/>
-                </tokenfilter>
-            </filterchain>
-        </copy>
-        <copy file="pom.xml.tmp" tofile="pom.xml"/>
-        <delete file="pom.xml.tmp"/>
-    </target>
 </project>
