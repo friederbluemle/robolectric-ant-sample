@@ -43,7 +43,7 @@
 
     <target name="test" depends="-compile-tests" description="Runs all Robolectric unit tests.">
         <mkdir dir="${out.test.reports.absolute.dir}"/>
-        <junit showoutput="true" failureproperty="junit.failure">
+        <junit showoutput="true" failureproperty="junit.failure" printsummary="yes">
             <formatter type="plain"/>
             <formatter type="xml"/>
             <batchtest todir="${out.test.reports.absolute.dir}">
