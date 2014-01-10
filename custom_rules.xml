@@ -58,11 +58,11 @@
     </target>
 
     <target name="test" depends="compile.tests" description="test all">
-        <mkdir dir="${basedir}/out/reports/tests"/>
+        <mkdir dir="${basedir}/bin/reports/tests"/>
         <junit showoutput="true" failureproperty="junit.failure">
             <formatter type="plain"/>
             <formatter type="xml"/>
-            <batchtest todir="${basedir}/out/reports/tests">
+            <batchtest todir="${basedir}/bin/reports/tests">
                 <fileset dir="${test.absolute.dir}">
                     <include name="**/*Test.java"/>
                 </fileset>
