@@ -11,7 +11,7 @@
         <property name="out.test.classes.absolute.dir" location="${out.dir}/testClasses" />
     </target>
 
-    <target name="compile.tests" depends="-set-debug-files, -set-debug-mode, -compile">
+    <target name="-compile-tests" depends="-set-debug-files, -set-debug-mode, -compile">
         <mkdir dir="${out.test.classes.absolute.dir}"/>
 
         <path id="project.javac.classpath">
@@ -43,7 +43,7 @@
         </javac>
     </target>
 
-    <target name="test" depends="compile.tests" description="test all">
+    <target name="test" depends="-compile-tests" description="Runs all Robolectric unit tests.">
         <mkdir dir="${basedir}/bin/reports/tests"/>
         <junit showoutput="true" failureproperty="junit.failure">
             <formatter type="plain"/>
