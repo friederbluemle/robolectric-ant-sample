@@ -2,8 +2,6 @@
 <project>
 
     <property name="test.absolute.dir" location="${test.dir}"/>
-    <property name="out.test-classes.dir" value="${out.absolute.dir}/testClasses"/>
-    <property name="out.test-classes.absolute.dir" value="${out.test-classes.dir}"/>
     <property name="test.external.libs.absolute.dir" location="${test.external.libs.dir}"/>
 
     <target name="-pre-compile">
@@ -57,7 +55,7 @@
             </batchtest>
             <classpath>
                 <pathelement path="${out.classes.absolute.dir}"/>
-                <pathelement path="${out.test-classes.absolute.dir}"/>
+                <pathelement path="${out.test.classes.absolute.dir}"/>
                 <fileset dir="${test.external.libs.absolute.dir}" includes="*.jar"/>
                 <fileset dir="${jar.libs.dir}" includes="*.jar"/>
                 <path refid="project.target.class.path"/>
