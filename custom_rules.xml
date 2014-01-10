@@ -5,13 +5,6 @@
     <property name="out.test-classes.dir" value="${out.absolute.dir}/testClasses"/>
     <property name="out.test-classes.absolute.dir" value="${out.test-classes.dir}"/>
     <property name="test.external.libs.absolute.dir" location="${test.external.libs.dir}"/>
-    <property name="publish.dir" location="${out.absolute.dir}/publish"/>
-
-    <property environment="env"/>
-    <condition property="build.number" value="${env.BUILD_NUMBER}" else="unknown">
-        <isset property="env.BUILD_NUMBER"/>
-    </condition>
-    <exec executable="date" outputproperty="build.date"/>
 
     <target name="-pre-compile">
         <!-- android uses this property for its generated testing framework. We'll set it manually.-->
@@ -50,11 +43,6 @@
                 <fileset dir="${tested.project.absolute.dir}/lib/test" includes="**/*.jar"/>
             </classpath>
         </javac>
-    </target>
-
-    <target name="-pre-clean" description="cleanup module">
-        <delete dir="${out.test-classes.absolute.dir}"/>
-        <delete dir="${tmp.dir}"/>
     </target>
 
     <target name="test" depends="compile.tests" description="test all">
