@@ -147,7 +147,8 @@ public class ApiGatewayTest {
 
         Robolectric.getUiThreadScheduler().runOneTask();
 
-        assertThat(asString(responseCallbacks.successResponse.getResponseDocument()), equalTo(GENERIC_XML));
+        String response = asString(responseCallbacks.successResponse.getResponseDocument());
+        assertThat(response.replace("\r\n", "\n"), equalTo(GENERIC_XML));
     }
 
     private class TestGetRequest extends ApiRequest<XmlApiResponse> {
