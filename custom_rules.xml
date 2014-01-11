@@ -60,6 +60,12 @@
                 <pathelement path="${sdk.dir}/extras/android/support/v4/android-support-v4.jar"/>
             </classpath>
         </junit>
+        <junitreport todir="${out.test.reports.absolute.dir}">
+            <fileset dir="${out.test.reports.absolute.dir}">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report todir="${out.test.reports.absolute.dir}" />
+        </junitreport>
         <fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
     </target>
 
