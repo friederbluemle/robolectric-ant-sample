@@ -21,6 +21,10 @@
         <path id="project.javac.classpath">
             <path refid="project.all.jars.path"/>
             <path refid="tested.project.classpath"/>
+            <path path="${java.compiler.classpath}" />
+            <path path="${out.classes.absolute.dir}" />
+            <fileset dir="${jar.libs.dir}" includes="*.jar"/>
+            <fileset dir="${test.jar.libs.dir}" includes="**/*.jar"/>
         </path>
 
         <javac encoding="${java.encoding}"
@@ -38,11 +42,6 @@
 
             <!-- test src -->
             <src path="${test.source.dir}"/>
-            <classpath>
-                <pathelement path="${out.classes.absolute.dir}"/>
-                <fileset dir="${jar.libs.dir}" includes="*.jar"/>
-                <fileset dir="${test.jar.libs.dir}" includes="**/*.jar"/>
-            </classpath>
         </javac>
     </target>
 
