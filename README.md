@@ -1,74 +1,60 @@
-This is a sample project configured and setup to use Robolectric.  This project shows how to configure
-your build file, how to layout your project, sample tests, etc.
+# RobolectricAntSample [![Build Status](https://travis-ci.org/friederbluemle/RobolectricAntSample.png?branch=master)](https://travis-ci.org/friederbluemle/RobolectricAntSample) #
 
-There are caveats:
+This project is based on [RobolectricSample](https://github.com/robolectric/RobolectricSample) and contains the same sample app and unit tests. The original project (RobolectricSample) uses the Maven build system/projects structure and Ant support was completely removed on Nov 05, 2013.
 
-    - This project uses Maven and can be imported into IntelliJ (open the pom.xml) or Eclipse (using M2Eclipse).
+Some legacy apps cannot be easily migrated to a newer build system like Maven or
+Gradle yet. If you are still using Ant as your main build system, and want to write unit tests using Robolectric, then RobolectricAntSample is for you. It demonstrates how to use Ant with Robolectric using a native Android Ant build project layout.
 
-    - We recommend building with Maven, but this project can also be built using ant.
+Tests can be run from both command line and Eclipse.
 
+## Prerequisites and Setup ##
 
-INSTALLATION
+### For Ant ###
 
-To install this sample app and run the tests:
+The Android SDK and a recent version of Ant should be all you need.
 
-    git clone git://github.com/pivotal/RobolectricSample.git
-    cd RobolectricSample
-    android update project -p .
+- The `ANDROID_HOME` environment variable must be set
+- Running `android update project -p .` is optional
 
-For more information about how to get projects running in your IDE see:
-http://pivotal.github.com/robolectric/quick-start.html
+### For Eclipse ###
 
+You need Eclipse with the Android ADT plugin set up. The test project uses a non-standard **Eclipse Classpath Variable** that is required
+in order to resolve to path to android.jar.
 
-BUILDING WITH MAVEN
+- Go to **Eclipse Preferences**
+- Open **Java** → **Build Path** → **Classpath Variables**
+- Create a new variable called **ANDROID_HOME** pointing to your Android SDK installation folder
+- Import RobolectricAntSample and the test project in the `test/` subdirectory as existing projects into your Eclipse workspace. Use General (not Android) on the import dialog.
 
-Once only*:
-    ant maven-setup
+## Running tests ##
 
-To build and run tests:
-    mvn clean test
+### From command line ###
 
-To install the sample app on the emulator:
-    mvn package android:deploy
+To build the main app and run unit tests:
 
+    $ ant test
 
-BUILDING WITH ANT
+Test results (as txt and xml files) will be stored under `test/bin/reports/`
 
-To build and run tests:
-    ant clean test
+You can also run the tests and generate an HTML report:
 
-To install the sample app on the emulator:
-    ant debug
-    adb -e install [-r] <your-project-name>-debug.apk
+    $ ant test-report
 
-The project contains a build.xml configured for the layout of the project.  The file extends the standard Android
-build.xml modified to support the layout of the project files.  The build.xml file defines a test target.
+The HTML report can be found under `test/bin/reports/html/`
 
+### From Eclipse ###
 
-CONTRIBUTING
+- Select **Run As** → **Run Configurations...** from the context menu of RobolectricAntSampleTest
+- Create a new **JUnit** launch configuration
+- Select **JUnit 4** as the test runner
+- On the **Arguments** tab, under **Working directory**, select Other and choose RobolectricAntSample as the workspace
+- Click **Choose one...** on the bottom to select a launcher and select **Eclipse JUnit Launcher**
+- You can now run the unit tests by clicking **Run As** → **JUnit Test** in the context menu of the test project or test file
 
-We welcome contributions. Please fork and submit pull requests!
+## Contributing ##
 
-* This method leaves your pom.xml in an edited state. If you know the path to the Android SDK (it gets stored as
-"sdk.dir" in your local.properties file) you can avoid this by running an alternative ant target and adding
-an xml snippet to your ~/.m2/settings.xml file:
+Contributions are welcome. Please fork and submit pull requests!
 
-    ant maven-install-jars
+## License ##
 
-and make your settings.xml file look something like this:
-    <settings>
-        <profiles>
-            <profile>
-                <id>android</id>
-                <properties>
-                    <android.sdk.path>
-                        PATH / TO / THE / ANDROID / SDK
-                    </android.sdk.path>
-                </properties>
-            </profile>
-        </profiles>
-        <activeProfiles>
-            <!--make the profile active all the time -->
-            <activeProfile>android</activeProfile>
-        </activeProfiles>
-    </settings>
+MIT
