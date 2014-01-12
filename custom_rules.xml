@@ -18,12 +18,12 @@
     </target>
 
     <target name="-compile-tests" depends="-pre-compile-tests, -set-debug-files, -set-debug-mode, -compile">
-        <path id="project.javac.classpath">
+        <path id="test.project.javac.classpath">
             <path refid="project.all.jars.path" />
             <path refid="tested.project.classpath" />
             <path path="${java.compiler.classpath}" />
             <path path="${out.classes.absolute.dir}" />
-            <fileset dir="${jar.libs.dir}" includes="*.jar" />
+            <fileset dir="${jar.libs.dir}" includes="**/*.jar" />
             <fileset dir="${test.jar.libs.dir}" includes="**/*.jar" />
         </path>
         <javac encoding="${java.encoding}"
@@ -32,7 +32,7 @@
                 destdir="${test.out.classes.dir}"
                 bootclasspathref="project.target.class.path"
                 verbose="${verbose}"
-                classpathref="project.javac.classpath"
+                classpathref="test.project.javac.classpath"
                 fork="${need.javac.fork}">
             <src path="${source.absolute.dir}" />
             <src path="${gen.absolute.dir}" />
@@ -42,21 +42,18 @@
 
     <target name="test" depends="-compile-tests" description="Runs all Robolectric unit tests.">
         <mkdir dir="${test.out.reports.dir}" />
+        <path id="junit.classpath">
+            <path refid="test.project.javac.classpath" />
+            <path refid="project.target.class.path" />
+            <path path="${test.out.classes.dir}" />
+        </path>
         <junit showoutput="true" failureproperty="junit.failure" printsummary="yes">
+            <classpath refid="junit.classpath" />
             <formatter type="plain" />
             <formatter type="xml" />
             <batchtest todir="${test.out.reports.dir}">
-                <fileset dir="${test.source.dir}">
-                    <include name="**/*Test.java" />
-                </fileset>
+                <fileset dir="${test.source.dir}" includes="**/*Test.java" />
             </batchtest>
-            <classpath>
-                <pathelement path="${out.classes.absolute.dir}" />
-                <pathelement path="${test.out.classes.dir}" />
-                <fileset dir="${test.jar.libs.dir}" includes="*.jar" />
-                <fileset dir="${jar.libs.dir}" includes="*.jar" />
-                <path refid="project.target.class.path" />
-            </classpath>
         </junit>
         <fail if="junit.failure" message="Unit test(s) failed.  See reports!" />
     </target>
@@ -64,9 +61,7 @@
     <target name="test-report" depends="test" description="Runs all Robolectric unit tests and generates an HTML report.">
         <mkdir dir="${test.out.reports.dir}/html" />
         <junitreport todir="${test.out.reports.dir}/html">
-            <fileset dir="${test.out.reports.dir}">
-                <include name="TEST-*.xml" />
-            </fileset>
+            <fileset dir="${test.out.reports.dir}" includes="TEST-*.xml" />
             <report todir="${test.out.reports.dir}/html" />
         </junitreport>
     </target>
