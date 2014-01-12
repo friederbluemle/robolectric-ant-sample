@@ -12,8 +12,12 @@
         <delete dir="${test.out.dir}" verbose="${verbose}" />
     </target>
 
-    <target name="-compile-tests" depends="-set-debug-files, -set-debug-mode, -compile">
+    <target name="-pre-compile-tests">
+        <mkdir dir="${test.out.dir}"/>
         <mkdir dir="${test.out.classes.dir}"/>
+    </target>
+
+    <target name="-compile-tests" depends="-pre-compile-tests, -set-debug-files, -set-debug-mode, -compile">
         <path id="project.javac.classpath">
             <path refid="project.all.jars.path"/>
             <path refid="tested.project.classpath"/>
@@ -60,6 +64,10 @@
                 <path refid="project.target.class.path"/>
             </classpath>
         </junit>
+        <fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
+    </target>
+
+    <target name="test-report" depends="test" description="Runs all Robolectric unit tests and generates an HTML report.">
         <mkdir dir="${test.out.reports.dir}/html"/>
         <junitreport todir="${test.out.reports.dir}/html">
             <fileset dir="${test.out.reports.dir}">
@@ -67,7 +75,6 @@
             </fileset>
             <report todir="${test.out.reports.dir}/html" />
         </junitreport>
-        <fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
     </target>
 
 </project>
