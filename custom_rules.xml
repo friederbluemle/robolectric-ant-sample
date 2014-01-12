@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
 
-    <property name="test.absolute.dir" location="${test.dir}"/>
-    <property name="test.external.libs.absolute.dir" location="${test.external.libs.dir}"/>
-
-    <target name="-pre-compile">
-        <property name="out.test.classes.absolute.dir" location="${out.dir}/testClasses" />
-        <property name="out.test.reports.absolute.dir" location="${out.dir}/reports/tests" />
-    </target>
+    <property name="test.dir" value="test" />
+    <property name="test.source.dir" location="${test.dir}/src"/>
+    <property name="test.jar.libs.dir" location="${test.dir}/lib"/>
+    <property name="test.out.dir" location="${test.dir}/bin"/>
+    <property name="test.out.classes.dir" location="${test.out.dir}/classes" />
+    <property name="test.out.reports.dir" location="${test.out.dir}/reports" />
 
     <target name="-compile-tests" depends="-set-debug-files, -set-debug-mode, -compile">
-        <mkdir dir="${out.test.classes.absolute.dir}"/>
+        <mkdir dir="${test.out.classes.dir}"/>
 
         <path id="project.javac.classpath">
             <path refid="project.all.jars.path"/>
@@ -23,7 +22,7 @@
                target="${java.target}"
                debug="true"
                extdirs=""
-               destdir="${out.test.classes.absolute.dir}"
+               destdir="${test.out.classes.dir}"
                bootclasspathref="project.target.class.path"
                verbose="${verbose}"
                classpathref="project.javac.classpath"
@@ -32,39 +31,39 @@
             <src path="${gen.absolute.dir}" />
 
             <!-- test src -->
-            <src path="${test.absolute.dir}"/>
+            <src path="${test.source.dir}"/>
             <classpath>
                 <pathelement path="${out.classes.absolute.dir}"/>
                 <fileset dir="${jar.libs.dir}" includes="*.jar"/>
-                <fileset dir="${test.external.libs.absolute.dir}" includes="**/*.jar"/>
+                <fileset dir="${test.jar.libs.dir}" includes="**/*.jar"/>
             </classpath>
         </javac>
     </target>
 
     <target name="test" depends="-compile-tests" description="Runs all Robolectric unit tests.">
-        <mkdir dir="${out.test.reports.absolute.dir}"/>
+        <mkdir dir="${test.out.reports.dir}"/>
         <junit showoutput="true" failureproperty="junit.failure" printsummary="yes">
             <formatter type="plain"/>
             <formatter type="xml"/>
-            <batchtest todir="${out.test.reports.absolute.dir}">
-                <fileset dir="${test.absolute.dir}">
+            <batchtest todir="${test.out.reports.dir}">
+                <fileset dir="${test.source.dir}">
                     <include name="**/*Test.java"/>
                 </fileset>
             </batchtest>
             <classpath>
                 <pathelement path="${out.classes.absolute.dir}"/>
-                <pathelement path="${out.test.classes.absolute.dir}"/>
-                <fileset dir="${test.external.libs.absolute.dir}" includes="*.jar"/>
+                <pathelement path="${test.out.classes.dir}"/>
+                <fileset dir="${test.jar.libs.dir}" includes="*.jar"/>
                 <fileset dir="${jar.libs.dir}" includes="*.jar"/>
                 <path refid="project.target.class.path"/>
                 <pathelement path="${sdk.dir}/extras/android/support/v4/android-support-v4.jar"/>
             </classpath>
         </junit>
-        <junitreport todir="${out.test.reports.absolute.dir}">
-            <fileset dir="${out.test.reports.absolute.dir}">
+        <junitreport todir="${test.out.reports.dir}">
+            <fileset dir="${test.out.reports.dir}">
                 <include name="TEST-*.xml" />
             </fileset>
-            <report todir="${out.test.reports.absolute.dir}" />
+            <report todir="${test.out.reports.dir}" />
         </junitreport>
         <fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
     </target>
