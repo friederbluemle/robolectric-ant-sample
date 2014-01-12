@@ -2,9 +2,9 @@
 <project>
 
     <property name="test.dir" value="test" />
-    <property name="test.source.dir" location="${test.dir}/src"/>
-    <property name="test.jar.libs.dir" location="${test.dir}/lib"/>
-    <property name="test.out.dir" location="${test.dir}/bin"/>
+    <property name="test.source.dir" location="${test.dir}/src" />
+    <property name="test.jar.libs.dir" location="${test.dir}/lib" />
+    <property name="test.out.dir" location="${test.dir}/bin" />
     <property name="test.out.classes.dir" location="${test.out.dir}/classes" />
     <property name="test.out.reports.dir" location="${test.out.dir}/reports" />
 
@@ -13,61 +13,56 @@
     </target>
 
     <target name="-pre-compile-tests">
-        <mkdir dir="${test.out.dir}"/>
-        <mkdir dir="${test.out.classes.dir}"/>
+        <mkdir dir="${test.out.dir}" />
+        <mkdir dir="${test.out.classes.dir}" />
     </target>
 
     <target name="-compile-tests" depends="-pre-compile-tests, -set-debug-files, -set-debug-mode, -compile">
         <path id="project.javac.classpath">
-            <path refid="project.all.jars.path"/>
-            <path refid="tested.project.classpath"/>
+            <path refid="project.all.jars.path" />
+            <path refid="tested.project.classpath" />
             <path path="${java.compiler.classpath}" />
             <path path="${out.classes.absolute.dir}" />
-            <fileset dir="${jar.libs.dir}" includes="*.jar"/>
-            <fileset dir="${test.jar.libs.dir}" includes="**/*.jar"/>
+            <fileset dir="${jar.libs.dir}" includes="*.jar" />
+            <fileset dir="${test.jar.libs.dir}" includes="**/*.jar" />
         </path>
-
         <javac encoding="${java.encoding}"
-               source="${java.source}"
-               target="${java.target}"
-               debug="true"
-               extdirs=""
-               destdir="${test.out.classes.dir}"
-               bootclasspathref="project.target.class.path"
-               verbose="${verbose}"
-               classpathref="project.javac.classpath"
-               includeantruntime="false">
+                source="${java.source}" target="${java.target}"
+                debug="true" extdirs="" includeantruntime="false"
+                destdir="${test.out.classes.dir}"
+                bootclasspathref="project.target.class.path"
+                verbose="${verbose}"
+                classpathref="project.javac.classpath"
+                fork="${need.javac.fork}">
             <src path="${source.absolute.dir}" />
             <src path="${gen.absolute.dir}" />
-
-            <!-- test src -->
-            <src path="${test.source.dir}"/>
+            <src path="${test.source.dir}" />
         </javac>
     </target>
 
     <target name="test" depends="-compile-tests" description="Runs all Robolectric unit tests.">
-        <mkdir dir="${test.out.reports.dir}"/>
+        <mkdir dir="${test.out.reports.dir}" />
         <junit showoutput="true" failureproperty="junit.failure" printsummary="yes">
-            <formatter type="plain"/>
-            <formatter type="xml"/>
+            <formatter type="plain" />
+            <formatter type="xml" />
             <batchtest todir="${test.out.reports.dir}">
                 <fileset dir="${test.source.dir}">
-                    <include name="**/*Test.java"/>
+                    <include name="**/*Test.java" />
                 </fileset>
             </batchtest>
             <classpath>
-                <pathelement path="${out.classes.absolute.dir}"/>
-                <pathelement path="${test.out.classes.dir}"/>
-                <fileset dir="${test.jar.libs.dir}" includes="*.jar"/>
-                <fileset dir="${jar.libs.dir}" includes="*.jar"/>
-                <path refid="project.target.class.path"/>
+                <pathelement path="${out.classes.absolute.dir}" />
+                <pathelement path="${test.out.classes.dir}" />
+                <fileset dir="${test.jar.libs.dir}" includes="*.jar" />
+                <fileset dir="${jar.libs.dir}" includes="*.jar" />
+                <path refid="project.target.class.path" />
             </classpath>
         </junit>
-        <fail if="junit.failure" message="Unit test(s) failed.  See reports!"/>
+        <fail if="junit.failure" message="Unit test(s) failed.  See reports!" />
     </target>
 
     <target name="test-report" depends="test" description="Runs all Robolectric unit tests and generates an HTML report.">
-        <mkdir dir="${test.out.reports.dir}/html"/>
+        <mkdir dir="${test.out.reports.dir}/html" />
         <junitreport todir="${test.out.reports.dir}/html">
             <fileset dir="${test.out.reports.dir}">
                 <include name="TEST-*.xml" />
