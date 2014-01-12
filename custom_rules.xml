@@ -8,6 +8,10 @@
     <property name="test.out.classes.dir" location="${test.out.dir}/classes" />
     <property name="test.out.reports.dir" location="${test.out.dir}/reports" />
 
+    <target name="-pre-clean">
+        <delete dir="${test.out.dir}" verbose="${verbose}" />
+    </target>
+
     <target name="-compile-tests" depends="-set-debug-files, -set-debug-mode, -compile">
         <mkdir dir="${test.out.classes.dir}"/>
 
