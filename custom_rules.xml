@@ -14,11 +14,9 @@
 
     <target name="-compile-tests" depends="-set-debug-files, -set-debug-mode, -compile">
         <mkdir dir="${test.out.classes.dir}"/>
-
         <path id="project.javac.classpath">
             <path refid="project.all.jars.path"/>
             <path refid="tested.project.classpath"/>
-            <pathelement path="${sdk.dir}/extras/android/support/v4/android-support-v4.jar"/>
         </path>
 
         <javac encoding="${java.encoding}"
@@ -60,7 +58,6 @@
                 <fileset dir="${test.jar.libs.dir}" includes="*.jar"/>
                 <fileset dir="${jar.libs.dir}" includes="*.jar"/>
                 <path refid="project.target.class.path"/>
-                <pathelement path="${sdk.dir}/extras/android/support/v4/android-support-v4.jar"/>
             </classpath>
         </junit>
         <mkdir dir="${test.out.reports.dir}/html"/>
