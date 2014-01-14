@@ -40,7 +40,7 @@
         </javac>
     </target>
 
-    <target name="test" depends="-compile-tests" description="Runs all Robolectric unit tests.">
+    <target name="unit-test" depends="-compile-tests" description="Runs all Robolectric unit tests.">
         <mkdir dir="${test.out.reports.dir}" />
         <path id="junit.classpath">
             <path refid="test.project.javac.classpath" />
@@ -58,7 +58,7 @@
         <fail if="junit.failure" message="Unit test(s) failed.  See reports!" />
     </target>
 
-    <target name="test-report" depends="test" description="Runs all Robolectric unit tests and generates an HTML report.">
+    <target name="generate-report" description="Generates an HTML report from existing test results.">
         <mkdir dir="${test.out.reports.dir}/html" />
         <junitreport todir="${test.out.reports.dir}/html">
             <fileset dir="${test.out.reports.dir}" includes="TEST-*.xml" />

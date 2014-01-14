@@ -32,13 +32,13 @@ in order to resolve to path to android.jar.
 
 To build the main app and run unit tests:
 
-    $ ant test
+    $ ant unit-test
 
 Test results (as txt and xml files) will be stored under `test/bin/reports/`
 
-You can also run the tests and generate an HTML report:
+To convert the JUnit test result files into an HTML report:
 
-    $ ant test-report
+    $ ant generate-report
 
 The HTML report can be found under `test/bin/reports/html/`
 
