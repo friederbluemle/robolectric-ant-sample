@@ -5,7 +5,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/robolectric-ant-sample"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/mockito-core-1.9.5.jar"/>
-	<classpathentry kind="lib" path="lib/robolectric-2.2-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="lib/robolectric-2.3-jar-with-dependencies.jar"/>
 	<classpathentry kind="var" path="ANDROID_HOME/platforms/android-18/android.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
