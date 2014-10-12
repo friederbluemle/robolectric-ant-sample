@@ -18,6 +18,9 @@
     </target>
 
     <target name="-compile-tests" depends="-pre-compile-tests, -set-debug-files, -set-debug-mode, -compile">
+        <copy todir="${test.out.classes.dir}">
+            <fileset dir="${test.source.dir}" includes="org.robolectric.Config.properties" />
+        </copy>
         <path id="test.project.javac.classpath">
             <path refid="project.all.jars.path" />
             <path refid="tested.project.classpath" />
