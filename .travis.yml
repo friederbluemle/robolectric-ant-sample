@@ -3,7 +3,7 @@ language: android
 android:
   components:
     - build-tools-20.0.0
-    - android-18
+    - android-20
 
 script:
   ant unit-test
